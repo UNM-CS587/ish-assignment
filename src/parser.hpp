@@ -97,25 +97,79 @@ auto const token = x3::rule<class token, std::string>()
 /* Development step:
  * Next, a command is command structure that includes a command name
  * and a list of arguments 
+ *
+ * Now supplement with handling of redirections.
  */
 
+
+/* Internal class to capture state of redirections for use in parsing*/ 
+struct redirection {
+    enum {REDIRECT_IN, REDIRECT_OUT} type;
+    bool redirectErr, redirectAppend;
+    std::string path;
+};
+
+const x3::rule<class redirect_rule, ish::parser::redirection> redirect = "redirect";
+auto const redirect_def = ((x3::string(">")
+                           | x3::string(">&")
+                           | x3::string(">>")
+                           | x3::string(">>&")
+                           | x3::string("<")) >> token)[(
+    [](auto &context)
+    {
+            const auto& redir = get<std::string>(at_c<0>(_attr(context)));
+            auto path = at_c<1>(_attr(context));
+            struct redirection r;
+
+            r.redirectAppend = false;
+            r.redirectErr = false;
+            if (redir[0] == '>') {
+                r.type = redirection::REDIRECT_OUT;
+                if (redir.length() > 1) {
+                    if (redir[1] == '>') {
+                        r.redirectAppend = true;
+                        if (redir.length() > 2) {
+                            r.redirectErr = true;
+                        }
+                    } else {
+                        r.redirectErr = true;
+                    }
+                } 
+            } else if (redir[0] == '<') {
+                r.type = redirection::REDIRECT_IN;
+                if (redir.length() > 1) {
+                    r.redirectErr = true;
+                }
+            }
+            _val(context) = std::move(r);
+    })];
+BOOST_SPIRIT_DEFINE(redirect);
+
 const x3::rule<class command_rule, class ish::command> command = "command";
-auto const command_def = (token >> *token)[(
-        [](auto& context)
-        {
-            auto& command_path = at_c<0>(_attr(context));
-            const auto& arguments = at_c<1>(_attr(context));
-            ish::command cmd(command_path);
+auto const command_def = (token >> *(token|redirect))[(
+    [](auto& context)
+    {
+        auto& command_path = at_c<0>(_attr(context));
+        const auto& redir_or_args_list = at_c<1>(_attr(context));
+        ish::command cmd(command_path);
 
-            for (auto& args: arguments) {
-                /* if (auto * const redirection = std::get_if<ish::redirection>(&*redir_or_arg) ) {
+        for (const boost::variant<struct redirection, std::string>& redir_or_arg: redir_or_args_list) {
+            if (redir_or_arg.type() == typeid(ish::parser::redirection)) {
+                auto r = get<ish::parser::redirection>(redir_or_arg);
+                if (r.type == redirection::REDIRECT_OUT) {
+                    cmd.registerRedirectOut(r.path, r.redirectErr, r.redirectAppend);
+                } else {
+                    cmd.registerRedirectIn(r.path);
+                }
 
-                } else  */
+            } else {
+                auto args = get<std::string>(redir_or_arg);
                 cmd.registerArgument(args);
             }
+        }
 
-            _val(context) = std::move(cmd);
-        })];
+        _val(context) = std::move(cmd);
+    })];
 BOOST_SPIRIT_DEFINE(command);
 
 

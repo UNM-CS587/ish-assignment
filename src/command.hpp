@@ -12,10 +12,6 @@
 
 
 namespace ish {
-    
-class redirection {
-    int foo;
-};
 
 class command {
     std::string name;
@@ -42,6 +38,16 @@ public:
     void registerArgument(std::string arg) {
         arguments.push_back(arg);
     }
+    void registerRedirectOut(std::string path, bool err, bool append)
+    {
+        outputFile = path;
+        redirError = err;
+        redirAppend = append;
+    }
+    void registerRedirectIn(std::string path)
+    {
+        inputFile = path;
+    } 
     void setBackground() {
         isForeground = false;
     }
