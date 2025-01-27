@@ -44,17 +44,6 @@ public:
     std::vector<std::string> getArguments() const { return arguments; }
 };
 
-std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
-{
-    out << "command: " << cmd.getName() << "\n"
-        << "args:\n";
-
-    for (auto arg : cmd.getArguments())
-    {
-        out << "\t" << arg << "\n";
-    }
-
-    return out;
-}
+std::ostream& operator<<(std::ostream& out, const ish::command& cmd);
 
 } // namespace ish
