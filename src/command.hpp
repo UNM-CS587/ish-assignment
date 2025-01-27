@@ -31,15 +31,24 @@ class command {
 
 public:
     command( std::string n ) 
-        :name(n) {
+        :name(n), isForeground(true), redirAppend(false), redirError(false) {
         arguments = std::vector<std::string>();
     }
 
-    command( ) {}
+    command( ) 
+        :isForeground(true), redirAppend(false), redirError(false) {
+    }
 
-    void register_argument(std::string arg) {
+    void registerArgument(std::string arg) {
         arguments.push_back(arg);
     }
+    void setBackground() {
+        isForeground = false;
+    }
+    void setForeground() {
+        isForeground = true;
+    }
+    bool getForeground() const { return isForeground; }
     std::string getName() const { return name; }
     std::vector<std::string> getArguments() const { return arguments; }
 };

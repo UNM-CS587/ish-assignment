@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <deque>
 #include <string> 
 #include <iostream>
 #include <boost/spirit/home/x3.hpp>
@@ -14,19 +15,19 @@
 namespace ish {
 
 /*
- * A Parsed command line is a vector of ISH::Command structures. 
+ * A Parsed command line is a vector of ish::command structures. 
  * (1) The top level is the list of commands to execute - there may be 
  *     more than one entry in this list for ';' seperated lists of commands
  * (2) The actual IShH commands are a Command struct as defined below  
  *
  * Credit: The general struture of the Boost::Spirit::X3 recursive decent
  * parser was inspired by the ppsh parser (https://github.com/peter-facko/ppsh).
- * The main difference between this partser and that one are that this one:
- * (1) Users the parser to capture whether the cdommand passed is a builtin or   
+ * (1) Users the parser to capture whether the command passed is a builtin or   
  * (2) Only captures the name of the file to redirect output to or from, and
  * (3) We don't parse pipelines
  * (4) We only parse up to a newline, not to end of input. The higher-level code
  *     invoking the parser has to handle end of input
+ * (5) We handle background commands
  * 
  * Another reference I used when building this parser are the slides of an X3
  * tutorial workshop found here: 
@@ -110,27 +111,56 @@ auto const command_def = (token >> *token)[(
                 /* if (auto * const redirection = std::get_if<ish::redirection>(&*redir_or_arg) ) {
 
                 } else  */
-                cmd.register_argument(args);
+                cmd.registerArgument(args);
             }
 
             _val(context) = std::move(cmd);
         })];
 BOOST_SPIRIT_DEFINE(command);
 
-auto const grammar = x3::rule<class grammar, std::vector<ish::command>>()
-    = command % eoln;
+
+
 
 /* Development step:
- * Identify builtin commands in the parsed stream
+ * Identify background jobs and ;-seperated sequences of jobs
  */
+auto const background = x3::char_('&');
+auto const separator = x3::char_("&;") | eoln | x3::eoi;
 
-/* Development step:
- * Identify background jobs
+/* We don't use the Boost Spirit sequence parser (%) because we care about what the 
+ * seperator is. The following rule gets three attributes:
+ * 1) An ISH command
+ * 2) A character separator (eoln/eoi, semicolon, or ampersand)
+ * 3) A std:optional<std::vector<ish::comamand>>, the rest of the command.
+ * Note that we use a deque here not a vector because we need to insert at the begining
+ * but because deques are compatible with vectors, the caller doesn't need to know that
  */
+const x3::rule<class commandseq_rule, std::deque<class ish::command>> commandseq = "commandseq";
+auto const commandseq_def = (command >> separator >> -commandseq)[(
+        [](auto &context) {
+            auto& cmd = at_c<0>(_attr(context));
+            const auto& separator = at_c<1>(_attr(context));
+            const auto& cmdlist_opt = at_c<2>(_attr(context));
 
-/* Development step 5:
- * Identify sequences of jobs, incliding which ones are running in the background
- */
+            if (separator == '&') {
+                cmd.setBackground();
+            } else {
+                cmd.setForeground();
+            }
+
+            if (cmdlist_opt.has_value()) {
+                std::deque<ish::command> cmdlist = std::move(cmdlist_opt.value());
+                cmdlist.push_front(cmd);
+                _val(context) = std::move(cmdlist);
+            } else {
+                std::deque<ish::command> cmdlist;
+                cmdlist.push_front(cmd);
+                _val(context) = std::move(cmdlist);
+            } 
+        })];
+BOOST_SPIRIT_DEFINE(commandseq);
+auto const grammar = commandseq;
+
 
 /* Development step 6:
  * Identify file redireection
@@ -146,7 +176,7 @@ auto token = squote | dquote | +(~ishspace);
         auto redirecttruncerr = string(">&") >> word;
         auto redirectappenderr = string(">>&") >> word;
         auto redirectout = redirecttrunc | redirectappend | redirecttruncerr | redirectappenderr;
-        auto background = char_(&);
+
         auto builtin = x3::lexeme(string("cd") | string("exit") | string("fg") | string())
         auto command = commandname >> *x3::space >> arguments >> -redirectin >> -redirectout >> -background;
         auto commands = command % ';'

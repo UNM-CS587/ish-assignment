@@ -1,7 +1,6 @@
 #include "parser.hpp"
 
 #include <iostream>
-#include <iterator>
 
 namespace ish {
 void repl(std::string command)
@@ -18,7 +17,7 @@ void repl(std::string command)
 
 int main(int argc, char *argv[])
 {
-        ish::repl("cd hello/world");
+        ish::repl("command1 argument1.1 argument1.2 & command2 argument2.1 argument2.2");
         return 0;
 }
 
