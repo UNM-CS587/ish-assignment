@@ -112,6 +112,7 @@ auto const redirect_def = ((x3::string(">")
 
             r.redirectAppend = false;
             r.redirectErr = false;
+            r.path = path;
             if (redir[0] == '>') {
                 r.type = redirection::REDIRECT_OUT;
                 if (redir.length() > 1) {

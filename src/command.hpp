@@ -56,6 +56,18 @@ public:
     }
     bool getForeground() const { return isForeground; }
     std::string getName() const { return name; }
+    bool getRedirectOutput(std::string &str, bool &err, bool &append) const {
+        if (!outputFile.has_value()) return false;
+        str = *outputFile;
+        err = redirError;
+        append = redirAppend;
+        return true;
+    }
+    bool getRedirectInput(std::string &str) const {
+        if (!inputFile.has_value()) return false;
+        str = *inputFile;
+        return true;
+    }
     std::vector<std::string> getArguments() const { return arguments; }
 };
 
