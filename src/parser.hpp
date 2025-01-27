@@ -3,11 +3,13 @@
  * Author: Patrick Bridges <pat
  */
 
+#pragma once
+
 #include <string> 
-#include <variant>
 #include <iostream>
 #include <boost/spirit/home/x3.hpp>
 
+#include "command.hpp"
 
 namespace ish {
 
@@ -32,50 +34,6 @@ namespace ish {
  */
 
 
-class command {
-    std::string name;
-    std::vector<std::string> arguments;
-    bool isForeground;
-
-    // Information about rediretions in this command
-    std::optional<std::string> inputFile;
-    bool redirAppend;
-    bool redirError;      
-    std::optional<std::string> outputFile;
-
-
-public:
-    command( std::string n ) 
-        :name(n) {
-        arguments = std::vector<std::string>();
-    }
-
-    command( ) {}
-
-    void register_argument(std::string arg) {
-        arguments.push_back(arg);
-    }
-    std::string getName() const { return name; }
-    std::vector<std::string> getArguments() const { return arguments; }
-};
-
-std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
-{
-    out << "command: " << cmd.getName() << "\n"
-        << "args:\n";
-
-    for (auto arg : cmd.getArguments())
-    {
-        out << "\t" << arg << "\n";
-    }
-
-    return out;
-}
-
-
-class redirection {
-    int foo;
-};
 
 namespace parser {
 
@@ -91,7 +49,7 @@ auto const ishpunct = x3::char_(",./`!@#$%^*=+") | x3::char_('-') | x3::char_('_
 
 // Escape handling courtesy of 
 // https://stackoverflow.com/questions/61695235/creating-a-boostspiritx3-parser-for-quoted-strings-with-escape-sequence-hand
-auto escapes = "\\n" >> x3::attr('\n')
+auto const escapes = "\\n" >> x3::attr('\n')
     | "\\b" >> x3::attr('\b')
     | "\\f" >> x3::attr('\f')
     | "\\t" >> x3::attr('\t')
