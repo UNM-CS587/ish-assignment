@@ -1,24 +1,48 @@
 #include "parser.hpp"
 
 #include <iostream>
+#include <ostream>
+#include <istream>
+#include <sstream>
 
 namespace ish {
-void repl(std::string command)
+
+void issuePrompt(std::ostream &out)
 {
+    out << "> " << std::flush;
+}
+
+void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
+{
+    while (!istr.eof() ) {
+        std::string input;
         std::vector<ish::command> output;
-        parser::parse_command(command.begin(), command.end(), output);
-        for (auto c: output) {
-            std::cout << c << "\n";            
+
+        if (interactive) {
+            issuePrompt(ostr);
         }
 
+        std::getline(istr, input);
+
+        auto f = input.begin(),
+             l = input.end();
+        if (ish::parser::parseCommands(f, l, output))  {
+            for (auto &cmd: output) {
+                ostr << cmd << "\n";
+            }               
+        } else {
+            ostr << "Parse error: " << input << "\n";
+        }
+    }
 }
+
 
 } //namespace ish
 
 int main(int argc, char *argv[])
 {
-        ish::repl("command1 argument1.1 argument1.2 > out/file1 < in/file2 & command2 argument2.1 argument2.2;");
-        return 0;
+    ish::processCommands(std::cin, std::cout, true);
+    return 0;
 }
 
 

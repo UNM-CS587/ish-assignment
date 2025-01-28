@@ -9,6 +9,7 @@
 #include <string> 
 #include <iostream>
 #include <boost/spirit/home/x3.hpp>
+#include <boost/spirit/include/support_istream_iterator.hpp>
 
 #include "command.hpp"
 
@@ -60,9 +61,9 @@ auto const escapes = "\\n" >> x3::attr('\n')
     | "\\n" >> x3::attr('\n')
     | "\\"  >> x3::char_("\"\\");
 auto const dquote = x3::rule<class dquote, std::string>() 
-    = '"' >> x3::lexeme[ *( escapes | ~x3::char_('"'))] >> '"';
+    = x3::lexeme['"' >> *( escapes | ~x3::char_('"')) >> '"'];
 auto const squote = x3::rule<class squote, std::string>() 
-    = '\'' >> x3::lexeme[ *( escapes |  ~x3::char_('\''))] >> '\'';
+    = x3::lexeme['\'' >> *( escapes |  ~x3::char_('\'')) >> '\''];
 auto const backspecial = '\\' >> x3::char_;
 
 // A token is a what the shell actually uses for arguments and filenames and such
@@ -99,11 +100,12 @@ struct redirection {
 
 /* The rule which turns a redirection into a redirectin structure*/
 const x3::rule<class redirect_rule, ish::parser::redirection> redirect = "redirect";
-auto const redirect_def = ((x3::string(">")
+auto const redirect_def = (x3::lexeme[(x3::string(">")
                            | x3::string(">&")
                            | x3::string(">>")
                            | x3::string(">>&")
-                           | x3::string("<")) >> token)[(
+                           | x3::string("<"))] 
+                           >> token)[(
     [](auto &context)
     {
             const auto& redir = get<std::string>(at_c<0>(_attr(context)));
@@ -184,55 +186,53 @@ BOOST_SPIRIT_DEFINE(command);
  * not a vector because we need to insert at the begining because deques are compatible 
  * with vectors, the caller doesn't need to know that.
  */
-auto const separator = x3::char_("&;") | eoln | x3::eoi;
+auto const separator = x3::char_("&;");
 
 /* We don't use the Boost Spirit sequence parser (%) because we care about what the 
  * seperator is. 
  */
 const x3::rule<class commandseq_rule, std::deque<class ish::command>> commandseq = "commandseq";
-auto const commandseq_def = (command >> separator >> -commandseq)[(
+auto const commandseq_def = (command >> -(separator >> -commandseq))[(
         [](auto &context) {
             auto& cmd = at_c<0>(_attr(context));
-            const auto& separator = at_c<1>(_attr(context));
-            const auto& cmdlist_opt = at_c<2>(_attr(context));
+            const auto& seq_opt = at_c<1>(_attr(context));
 
-            if (separator == '&') {
-                cmd.setBackground();
-            } else {
-                cmd.setForeground();
-            }
+            std::deque<ish::command> cmdlist;
 
-            if (cmdlist_opt.has_value()) {
-                std::deque<ish::command> cmdlist = std::move(cmdlist_opt.value());
-                cmdlist.push_front(cmd);
-                _val(context) = std::move(cmdlist);
-            } else {
-                std::deque<ish::command> cmdlist;
-                cmdlist.push_front(cmd);
-                _val(context) = std::move(cmdlist);
+            if (seq_opt.has_value()) {
+                const char separator = at_c<0>(seq_opt.value());
+                const auto& cmdlist_opt = at_c<1>(seq_opt.value());
+
+                if (separator == '&') {
+                    cmd.setBackground();
+                }
+                if (cmdlist_opt.has_value()) {
+                    cmdlist = std::move(cmdlist_opt.value());
+                }
             } 
+            cmdlist.push_front(cmd);
+            _val(context) = std::move(cmdlist);
         })];
 BOOST_SPIRIT_DEFINE(commandseq);
-auto const grammar = commandseq;
+
+auto const grammar = x3::rule<class grammar, std::deque<ish::command>>()
+    = (-commandseq >> (eoln | x3::eoi))[(
+        [](auto& context)
+        {
+            auto& cmd_opt = _attr(context);
+            std::deque<ish::command> v;
+            if (cmd_opt.has_value()) {
+                v = cmd_opt.value();
+            }
+            _val(context) = std::move(v);
+        })];
+
 
 template <class Iterator>
-auto parse_command(Iterator iter, Iterator end_iter, std::vector<ish::command> &output) 
+bool parseCommands(Iterator &begin, Iterator &end, std::vector<ish::command> &output) 
 {
-    auto r = x3::phrase_parse(iter, end_iter, grammar, x3::ascii::space, output);
-    if (iter != end_iter) {
-        auto distance = end_iter - iter;
-        std::cout << "Failed: didn't parse everything\n";
-        std::cout << "stopped " << distance << " characters from the end "
-                  << "( '" << *iter << "' )\n";
-        return 1;
-    } else if (r) {
-        std::cout << "Good input\n";
-        return 0;
-    } else {
-        std::cout << "Parse failed\n";
-        return 1;
-    }
-}
+    return x3::phrase_parse(begin, end, grammar, x3::ascii::space - x3::char_('\n'), output);
+};  
 
 } // Namespace parser
 } // Namespace isp
