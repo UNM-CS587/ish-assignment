@@ -4,7 +4,7 @@
   * Due Date: Monday, March 3, 2025, 11:59pm
 
 ## Overview
-Your task is to implement---on your own---a basic Unix command shell. Your shell //must// use either the provided C (src-c/) or C++ parser (src/), and implement a subset of the features described in the included ISH manual page. Notably, you do //not// need to implement job control or pipelines. 
+Your task is to implement---on your own---a basic Unix command shell. Your shell *must* use either the provided C (src-c/) or C++ parser (src/), and implement a subset of the features described in the included ISH manual page. Notably, you do *not* need to implement job control or pipelines. 
 
 The basic features you need to implement are:
   * Basic command execution
@@ -43,13 +43,13 @@ The features you do //not// need to implement that are described in the ISH man 
 
 ## Starter Source Code and Programming Assignment Restrictions 
 
-Your shell should be written in C or C++, compile using cmake, and produce an executable named `ish`. I have provided a C++ parser for the subset of 'ish' assigned in this assignment in the src/ directory; the C++ starter code does //not// parse pipelines as they are not required for this assignment. In addition, I have also provided C starter code in the src-c director that you may use if you prefer. To use this code, change the CMakeLists.txt in the top-level directory to point to the src-c/ directory instead of the src/ to find its source code.
+Your shell should be written in C or C++, compile using cmake, and produce an executable named `ish`. I have provided a C++ parser for the subset of 'ish' assigned in this assignment in the src/ directory; the C++ starter code does *not* parse pipelines as they are not required for this assignment. In addition, I have also provided C starter code in the src-c director that you may use if you prefer. To use this code, change the CMakeLists.txt in the top-level directory to point to the src-c/ directory instead of the src/ to find its source code.
 
 Your code must also be "clean" -- it should compile without warnings or unresolved references ion a standard UNIX system with the Boost C++ libraries installed. I will provide a GitHub Codespace with the appropriate setup for developing your program shortly after the assignment becomes available. I encourage you to use GitHub Codespaces for development, as if you have problems I can connect to your codespace and help you debug your program. Your programs are expected to be well organized and easy to read, as well as correct.
 
-You //must//, use either the C++ or C parsers provided to implement your shell. You may modify these parsers if necessary (e.g. if you want to change the parser to detect builtin commands or add extra functionality to the command structure/class provided), but the general structure of the parser //must remain the same//. You may //not// use your own custom parser or one taken from elsewhere.
+You //must//, use either the C++ or C parsers provided to implement your shell. You may modify these parsers if necessary (e.g. if you want to change the parser to detect builtin commands or add extra functionality to the command structure/class provided), but the general structure of the parser *must remain the same*. You may *not* use your own custom parser or one taken from elsewhere.
 
-You must use the `fork` and `execve` C system calls to start new processes and the `dup` or `dup2` command to handle file redirection. You may //not// use the `system` call, it's C++ equivalents, or any other mechanism for creating processes or redirecting file I/O.
+You must use the `fork` and `execve` C system calls to start new processes and the `dup` or `dup2` command to handle file redirection. You may *not* use other variants of `exec` or the `system` call, their C++ equivalents, or any other mechanism for creating processes or redirecting file I/O.
 
 ## Testing
 
