@@ -1,7 +1,7 @@
 # CMake Specification for C++ Version of the CS857 ISH Shell Infrastructure
 
 # Basic CMake Setup
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.25)
 
 project(UNM-CS887-ISH)
 

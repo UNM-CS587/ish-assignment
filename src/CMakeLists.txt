@@ -11,7 +11,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
-find_package(Boost 1.81.0)
+find_package(Boost 1.70.0)
 
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
