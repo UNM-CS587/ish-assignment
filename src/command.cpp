@@ -15,16 +15,26 @@ std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
     }
     std::string path;
     bool err, append;
-    if (cmd.getRedirectOutput(path, err, append)) {
-        if (append) out << "  Append Output";
-        else out << "  Redirect Output";
-
-        if (err) out << "and Error:" << path << "\n";
-        else out << ": " << path << "\n";
-    }
-
-    if (cmd.getRedirectInput(path)) {
-        out << "  Redirect Input: " << path << "\n";
+    out << "  redirections:\n";
+    for (auto redir: cmd.getRedirections()) {
+        switch(redir.type) {
+        case REDIRECT_IN:
+            out << "\tinput: ";
+            break;
+        case REDIRECT_OUT:
+            out << "\toutput: ";
+            break;
+        case REDIRECT_APPEND:
+            out << "\tappend output: ";
+            break;
+        case REDIRECT_OUTERR:
+            out << "output and error: ";
+            break;
+        case REDIRECT_APPENDERR:
+            out << "append output and error: ";
+            break;
+        }
+        out << redir.path << "\n";
     }
 
     if (!cmd.getForeground()) out << "  Background Job\n";

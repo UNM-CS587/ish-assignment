@@ -3,7 +3,6 @@
 #include <iostream>
 #include <ostream>
 #include <istream>
-#include <sstream>
 
 namespace ish {
 

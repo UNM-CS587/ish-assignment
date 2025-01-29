@@ -7,9 +7,7 @@
 
 #include <deque>
 #include <string> 
-#include <iostream>
 #include <boost/spirit/home/x3.hpp>
-#include <boost/spirit/include/support_istream_iterator.hpp>
 
 #include "command.hpp"
 
@@ -92,47 +90,28 @@ auto const token = x3::rule<class token, std::string>()
 
 /* Create a class to capture state of a redirection while parsing. Handed from the 
  * redirection handling to the construction of the command that uses the redirection. */
-struct redirection {
-    enum {REDIRECT_IN, REDIRECT_OUT} type;
-    bool redirectErr, redirectAppend;
-    std::string path;
-};
+
+
+struct redirection_type_symbols_ : boost::spirit::x3::symbols<enum redirection_type>
+{
+    redirection_type_symbols_()
+    {
+        add(">", REDIRECT_OUT);
+        add(">>", REDIRECT_APPEND);
+        add(">&", REDIRECT_OUTERR);
+        add(">>&", REDIRECT_APPENDERR);
+        add("<", REDIRECT_IN);
+    }
+} static const redirection_type_symbols;
 
 /* The rule which turns a redirection into a redirectin structure*/
-const x3::rule<class redirect_rule, ish::parser::redirection> redirect = "redirect";
-auto const redirect_def = (x3::lexeme[(x3::string(">")
-                           | x3::string(">&")
-                           | x3::string(">>")
-                           | x3::string(">>&")
-                           | x3::string("<"))] 
-                           >> token)[(
+const x3::rule<class redirect_rule, std::pair<enum redirection_type, std::string>> redirect = "redirect";
+auto const redirect_def = (redirection_type_symbols >> token)[(
     [](auto &context)
     {
-            const auto& redir = get<std::string>(at_c<0>(_attr(context)));
+            enum redirection_type redir = at_c<0>(_attr(context));
             auto path = at_c<1>(_attr(context));
-            struct redirection r;
-
-            r.redirectAppend = false;
-            r.redirectErr = false;
-            r.path = path;
-            if (redir[0] == '>') {
-                r.type = redirection::REDIRECT_OUT;
-                if (redir.length() > 1) {
-                    if (redir[1] == '>') {
-                        r.redirectAppend = true;
-                        if (redir.length() > 2) {
-                            r.redirectErr = true;
-                        }
-                    } else {
-                        r.redirectErr = true;
-                    }
-                } 
-            } else if (redir[0] == '<') {
-                r.type = redirection::REDIRECT_IN;
-                if (redir.length() > 1) {
-                    r.redirectErr = true;
-                }
-            }
+            auto r = make_pair(redir, path);
             _val(context) = std::move(r);
     })];
 BOOST_SPIRIT_DEFINE(redirect);
@@ -152,20 +131,16 @@ auto const command_def = (token >> *(token|redirect))[(
         ish::command cmd(command_path);
 
         for (const auto& redir_or_arg: redir_or_args_list) {
-            if (redir_or_arg.type() == typeid(ish::parser::redirection)) {
-                auto r = get<ish::parser::redirection>(redir_or_arg);
-                if (r.type == redirection::REDIRECT_OUT) {
-                    cmd.registerRedirectOut(r.path, r.redirectErr, r.redirectAppend);
-                } else {
-                    cmd.registerRedirectIn(r.path);
-                }
-
-            } else {
+            if (redir_or_arg.type() == typeid(std::pair<enum redirection_type,std::string>)) {
+                auto r = get<std::pair<enum redirection_type, std::string>>(redir_or_arg);
+                cmd.registerRedirection(get<0>(r), get<1>(r));
+            } else if (redir_or_arg.type() == typeid(std::string)) {
                 auto args = get<std::string>(redir_or_arg);
                 cmd.registerArgument(args);
+            } else {
+                std::cerr << "Invalid redirection typeid\n";
             }
         }
-
         _val(context) = std::move(cmd);
     })];
 BOOST_SPIRIT_DEFINE(command);
