@@ -55,7 +55,7 @@ You must use the `fork` and `execve` C system calls to start new processes and t
 
 Testcases that test correctness and constitute 85% of the grade of the shell will be provided approximately one week after the assignment is posted. Additional tests that test your shell error handling will be used for final testing ofyour program. A pull request will be submitted to your github repository adding test features when these testcases are available.
 
-## Assignmnet submission
+## Assignment submission
 
 You will use GitHub classroom to submit a working program on or before the due date. Be sure to commit and push all of your changes to the `main` branch on your repository prior to the due date!
 
