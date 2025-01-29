@@ -28,10 +28,10 @@ std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
             out << "\tappend output: ";
             break;
         case REDIRECT_OUTERR:
-            out << "output and error: ";
+            out << "\toutput and error: ";
             break;
         case REDIRECT_APPENDERR:
-            out << "append output and error: ";
+            out << "\tappend output and error: ";
             break;
         }
         out << redir.path << "\n";

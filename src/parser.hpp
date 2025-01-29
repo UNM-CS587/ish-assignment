@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <deque>
 #include <string> 
 #include <boost/spirit/home/x3.hpp>
 
@@ -110,8 +109,8 @@ auto const redirect_def = (redirection_type_symbols >> token)[(
     [](auto &context)
     {
             enum redirection_type redir = at_c<0>(_attr(context));
-            auto path = at_c<1>(_attr(context));
-            auto r = make_pair(redir, path);
+            auto & path = at_c<1>(_attr(context));
+            auto r = make_pair(redir, std::move(path));
             _val(context) = std::move(r);
     })];
 BOOST_SPIRIT_DEFINE(redirect);
@@ -122,13 +121,13 @@ BOOST_SPIRIT_DEFINE(redirect);
  * or a redirection symbol followed by a simple string (the filename). As a result,
  * we have to walk this list of arguments and check each if it's a redirection or 
  * argument, and then add it to the command, as encountered. */
-const x3::rule<class command_rule, class ish::command> command = "command";
-auto const command_def = (token >> *(token|redirect))[(
+const x3::rule<class commandel_rule, class ish::command> commandel = "commandel";
+auto const commandel_def = (token >> *(token|redirect))[(
     [](auto& context)
     {
         auto& command_path = at_c<0>(_attr(context));
         const auto& redir_or_args_list = at_c<1>(_attr(context));
-        ish::command cmd(command_path);
+        class ish::command cmd(std::move(command_path));
 
         for (const auto& redir_or_arg: redir_or_args_list) {
             if (redir_or_arg.type() == typeid(std::pair<enum redirection_type,std::string>)) {
@@ -143,59 +142,16 @@ auto const command_def = (token >> *(token|redirect))[(
         }
         _val(context) = std::move(cmd);
     })];
-BOOST_SPIRIT_DEFINE(command);
+BOOST_SPIRIT_DEFINE(commandel);
 
+auto const commandseq = commandel % x3::char_(';');
 
-/* Final step:
- * Identify background jobs and ;-seperated sequences of jobs. 
- * The following rule gets three attributes:
- * 1) An ISH command
- * 2) A character separator (eoln/eoi, semicolon, or ampersand)
- * 3) A std:optional<std::vector<ish::comamand>>, the rest of the command.
- *
- * Basically, a command sequence is a command followed by a separator. That separator 
- * may be the end of input. We need to separator *following* a command, so we use 
- * right recursion to get the command, the following separator, and then the remainder 
- * of the list. As the recursive parser comes back up the list, we put the commands
- * that were construted on the heqad of the list. Note that we use a deque here and
- * not a vector because we need to insert at the begining because deques are compatible 
- * with vectors, the caller doesn't need to know that.
- */
-auto const separator = x3::char_("&;");
-
-/* We don't use the Boost Spirit sequence parser (%) because we care about what the 
- * seperator is. 
- */
-const x3::rule<class commandseq_rule, std::deque<class ish::command>> commandseq = "commandseq";
-auto const commandseq_def = (command >> -(separator >> -commandseq))[(
-        [](auto &context) {
-            auto& cmd = at_c<0>(_attr(context));
-            const auto& seq_opt = at_c<1>(_attr(context));
-
-            std::deque<ish::command> cmdlist;
-
-            if (seq_opt.has_value()) {
-                const char separator = at_c<0>(seq_opt.value());
-                const auto& cmdlist_opt = at_c<1>(seq_opt.value());
-
-                if (separator == '&') {
-                    cmd.setBackground();
-                }
-                if (cmdlist_opt.has_value()) {
-                    cmdlist = std::move(cmdlist_opt.value());
-                }
-            } 
-            cmdlist.push_front(cmd);
-            _val(context) = std::move(cmdlist);
-        })];
-BOOST_SPIRIT_DEFINE(commandseq);
-
-auto const grammar = x3::rule<class grammar, std::deque<ish::command>>()
+auto const grammar = x3::rule<class grammar, std::vector<class ish::command>>()
     = (-commandseq >> (eoln | x3::eoi))[(
         [](auto& context)
         {
             auto& cmd_opt = _attr(context);
-            std::deque<ish::command> v;
+            std::vector<ish::command> v;
             if (cmd_opt.has_value()) {
                 v = cmd_opt.value();
             }
@@ -204,7 +160,7 @@ auto const grammar = x3::rule<class grammar, std::deque<ish::command>>()
 
 
 template <class Iterator>
-bool parseCommands(Iterator &begin, Iterator &end, std::vector<ish::command> &output) 
+bool parseCommands(Iterator &begin, Iterator &end, std::vector<class ish::command> &output) 
 {
     return x3::phrase_parse(begin, end, grammar, x3::ascii::space - x3::char_('\n'), output);
 };  
