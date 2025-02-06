@@ -8,4 +8,3 @@ project(UNM-CS887-ISH)
 add_subdirectory(src)
 # Comment outthe line above and uncomment this instead if you want 
 # to use the old C parser instead of the new C++ parser.
-#add_subdirectory(src-c) 
