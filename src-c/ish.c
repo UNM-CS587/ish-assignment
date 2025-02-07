@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "command.h"
-#include "parser.tab.h"
+#include "parser.h"
 
 void
 issuePrompt(FILE *pf)
