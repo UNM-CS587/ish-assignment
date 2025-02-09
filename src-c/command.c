@@ -4,7 +4,7 @@
 #include <assert.h>
 
 #include "command.h"
-#include "parser.tab.h"
+#include "parser.h"
 
 /* TODO
  * double-linking of lists
