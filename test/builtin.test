@@ -1,0 +1,30 @@
+# Test that CD to a valid directoru works
+< 
+cd /dev
+/bin/pwd
+$ SHELL
+PROMPT PROMPT /dev
+PROMPT exit
+# Test that CD with no arguments goes home
+< 
+cd /dev
+/bin/pwd
+cd
+/bin/pwd
+$ SHELL
+PROMPT PROMPT /dev
+PROMPT PROMPT HOME
+PROMPT exit
+# Test that cd works in semicolon sequences
+< 
+cd /dev; /bin/pwd; cd; /bin/pwd
+$ SHELL
+PROMPT /dev
+HOME
+PROMPT exit
+# TEst that quit works
+<
+quit
+/bin/echo should not be reached
+$ SHELL
+PROMPT exit
