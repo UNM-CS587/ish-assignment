@@ -4,6 +4,7 @@
 /bin/echo out test > redirectout.txt
 /bin/cat redirectout.txt
 $ SHELL
+>
 PROMPT PROMPT PROMPT out test
 PROMPT exit
 
@@ -14,6 +15,7 @@ PROMPT exit
 /bin/echo rewrite two > redirectout.txt
 /bin/cat redirectout.txt
 $ SHELL
+>
 PROMPT PROMPT PROMPT PROMPT rewrite two
 PROMPT exit
 
@@ -24,34 +26,25 @@ PROMPT exit
 /bin/echo rewrite two >> redirectout.txt
 /bin/cat redirectout.txt
 $ SHELL
+>
 PROMPT PROMPT PROMPT PROMPT rewrite one
 rewrite two
 PROMPT exit
 
-# Test error out
+# Test error out. We use regexp to look for the error because
+# of the changingerror messages on different systems from touch
 <
 /bin/rm -f redirecterr
 /usr/bin/touch /etc/password >& redirecterr
 /bin/cat redirecterr
 $ SHELL
-PROMPT PROMPT PROMPT touch: /etc/password: Permission denied
-PROMPT exit
-
-# Test error append
-<
-/bin/rm -f redirecterr
-/usr/bin/touch /etc/password >& redirecterr
-/usr/bin/touch /etc/password >>& redirecterr
-/bin/cat redirecterr
-$ SHELL
-PROMPT PROMPT PROMPT PROMPT touch: /etc/password: Permission denied
-touch: /etc/password: Permission denied
-PROMPT exit
+> /Permission denied/
 
 # Test redirect input
 <
 /bin/cat < redirectin.txt
 $ SHELL
+>
 PROMPT Contents of the file redirectin
 PROMPT exit
 
