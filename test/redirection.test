@@ -1,0 +1,57 @@
+# Test basic output redirection
+<
+/bin/rm -f redirectout.txt
+/bin/echo out test > redirectout.txt
+/bin/cat redirectout.txt
+$ SHELL
+PROMPT PROMPT PROMPT out test
+PROMPT exit
+
+# Test if output file is rewritten
+<
+/bin/rm -f redirectout.txt
+/bin/echo rewrite one > redirectout.txt
+/bin/echo rewrite two > redirectout.txt
+/bin/cat redirectout.txt
+$ SHELL
+PROMPT PROMPT PROMPT PROMPT rewrite two
+PROMPT exit
+
+# Test output append
+<
+/bin/rm -f redirectout.txt
+/bin/echo rewrite one >> redirectout.txt
+/bin/echo rewrite two >> redirectout.txt
+/bin/cat redirectout.txt
+$ SHELL
+PROMPT PROMPT PROMPT PROMPT rewrite one
+rewrite two
+PROMPT exit
+
+# Test error out
+<
+/bin/rm -f redirecterr
+/usr/bin/touch /etc/password >& redirecterr
+/bin/cat redirecterr
+$ SHELL
+PROMPT PROMPT PROMPT touch: /etc/password: Permission denied
+PROMPT exit
+
+# Test error append
+<
+/bin/rm -f redirecterr
+/usr/bin/touch /etc/password >& redirecterr
+/usr/bin/touch /etc/password >>& redirecterr
+/bin/cat redirecterr
+$ SHELL
+PROMPT PROMPT PROMPT PROMPT touch: /etc/password: Permission denied
+touch: /etc/password: Permission denied
+PROMPT exit
+
+# Test redirect input
+<
+/bin/cat < redirectin.txt
+$ SHELL
+PROMPT Contents of the file redirectin
+PROMPT exit
+
