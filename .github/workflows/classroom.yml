@@ -31,6 +31,7 @@ jobs:
     - name: Basic Errors
       id: basic-errors
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Basic Errors
         setup-command: ''
@@ -40,6 +41,7 @@ jobs:
     - name: Builtin Tests
       id: builtin-tests
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Builtin Tests
         setup-command: ''
@@ -49,6 +51,7 @@ jobs:
     - name: Environment Tests
       id: environment-tests
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Environment Tests
         setup-command: ''
@@ -58,6 +61,7 @@ jobs:
     - name: Redirection Tests
       id: redirection-tests
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Redirection Tests
         setup-command: ''
@@ -67,6 +71,7 @@ jobs:
     - name: Redirection Errors
       id: redirection-errors
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Redirection Errors
         setup-command: ''
@@ -76,6 +81,7 @@ jobs:
     - name: Corner Tests
       id: corner-tests
       uses: classroom-resources/autograding-command-grader@v1
+      working-directory: build
       with:
         test-name: Corner Tests
         setup-command: ''
