@@ -1,0 +1,90 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Basic Tests
+      id: basic-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Basic Tests
+        setup-command: ''
+        command: cmake -R BasicTests
+        timeout: 10
+        max-score: 30
+    - name: Basic Errors
+      id: basic-errors
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Basic Errors
+        setup-command: ''
+        command: cmake -R BasicErrors
+        timeout: 10
+        max-score: 5
+    - name: Builtin Tests
+      id: builtin-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Builtin Tests
+        setup-command: ''
+        command: cmake -R BuiltinTests
+        timeout: 10
+        max-score: 15
+    - name: Environment Tests
+      id: environment-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Environment Tests
+        setup-command: ''
+        command: cmake -R EnvironmentTests
+        timeout: 10
+        max-score: 15
+    - name: Redirection Tests
+      id: redirection-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Redirection Tests
+        setup-command: ''
+        command: cmake -R RedirectionTests
+        timeout: 10
+        max-score: 15
+    - name: Redirection Errors
+      id: redirection-errors
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Redirection Errors
+        setup-command: ''
+        command: cmake -R RedirectionErrors
+        timeout: 10
+        max-score: 10
+    - name: Corner Tests
+      id: corner-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Corner Tests
+        setup-command: ''
+        command: cmake -R CornerTests
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        BASIC-TESTS_RESULTS: "${{steps.basic-tests.outputs.result}}"
+        BASIC-ERRORS_RESULTS: "${{steps.basic-errors.outputs.result}}"
+        BUILTIN-TESTS_RESULTS: "${{steps.builtin-tests.outputs.result}}"
+        ENVIRONMENT-TESTS_RESULTS: "${{steps.environment-tests.outputs.result}}"
+        REDIRECTION-TESTS_RESULTS: "${{steps.redirection-tests.outputs.result}}"
+        REDIRECTION-ERRORS_RESULTS: "${{steps.redirection-errors.outputs.result}}"
+        CORNER-TESTS_RESULTS: "${{steps.corner-tests.outputs.result}}"
+      with:
+        runners: basic-tests,basic-errors,builtin-tests,environment-tests,redirection-tests,redirection-errors,corner-tests
