@@ -19,7 +19,7 @@ jobs:
       with:
         test-name: Basic Tests
         setup-command: ''
-        command: cmake -R BasicTests
+        command: ctest -R BasicTests
         timeout: 10
         max-score: 30
     - name: Basic Errors
@@ -28,7 +28,7 @@ jobs:
       with:
         test-name: Basic Errors
         setup-command: ''
-        command: cmake -R BasicErrors
+        command: ctest -R BasicErrors
         timeout: 10
         max-score: 5
     - name: Builtin Tests
@@ -37,7 +37,7 @@ jobs:
       with:
         test-name: Builtin Tests
         setup-command: ''
-        command: cmake -R BuiltinTests
+        command: ctest -R BuiltinTests
         timeout: 10
         max-score: 15
     - name: Environment Tests
@@ -46,7 +46,7 @@ jobs:
       with:
         test-name: Environment Tests
         setup-command: ''
-        command: cmake -R EnvironmentTests
+        command: ctest -R EnvironmentTests
         timeout: 10
         max-score: 15
     - name: Redirection Tests
@@ -55,7 +55,7 @@ jobs:
       with:
         test-name: Redirection Tests
         setup-command: ''
-        command: cmake -R RedirectionTests
+        command: ctest -R RedirectionTests
         timeout: 10
         max-score: 15
     - name: Redirection Errors
@@ -64,7 +64,7 @@ jobs:
       with:
         test-name: Redirection Errors
         setup-command: ''
-        command: cmake -R RedirectionErrors
+        command: ctest -R RedirectionErrors
         timeout: 10
         max-score: 10
     - name: Corner Tests
@@ -73,7 +73,7 @@ jobs:
       with:
         test-name: Corner Tests
         setup-command: ''
-        command: cmake -R CornerTests
+        command: ctest -R CornerTests
         timeout: 10
         max-score: 10
     - name: Autograding Reporter
