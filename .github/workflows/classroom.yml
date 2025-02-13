@@ -31,31 +31,28 @@ jobs:
     - name: Basic Errors
       id: basic-errors
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Basic Errors
         setup-command: ''
-        command: ctest -R BasicErrors
+        command: ctest -R BasicErrors --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 5
     - name: Builtin Tests
       id: builtin-tests
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Builtin Tests
         setup-command: ''
-        command: ctest -R BuiltinTests
+        command: ctest -R BuiltinTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 15
     - name: Environment Tests
       id: environment-tests
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Environment Tests
         setup-command: ''
-        command: ctest -R EnvironmentTests
+        command: ctest -R EnvironmentTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 15
     - name: Redirection Tests
@@ -65,27 +62,25 @@ jobs:
       with:
         test-name: Redirection Tests
         setup-command: ''
-        command: ctest -R RedirectionTests
+        command: ctest -R RedirectionTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 15
     - name: Redirection Errors
       id: redirection-errors
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Redirection Errors
         setup-command: ''
-        command: ctest -R RedirectionErrors
+        command: ctest -R RedirectionErrors --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 10
     - name: Corner Tests
       id: corner-tests
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Corner Tests
         setup-command: ''
-        command: ctest -R CornerTests
+        command: ctest -R CornerTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 10
     - name: Autograding Reporter
