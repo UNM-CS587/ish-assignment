@@ -58,7 +58,6 @@ jobs:
     - name: Redirection Tests
       id: redirection-tests
       uses: classroom-resources/autograding-command-grader@v1
-      working-directory: build
       with:
         test-name: Redirection Tests
         setup-command: ''
