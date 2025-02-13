@@ -12,11 +12,11 @@ jobs:
     if: github.actor != 'github-classroom[bot]'
     steps:
     - name: Install packages
-      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev flex bison libfl2 shelltestrunner
+      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev flex bison libfl2 libfl-dev shelltestrunner
     - name: Checkout code
       uses: actions/checkout@v4
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=clang -DCMAKE_CC_COMPILER=clang++
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     - name: Build
       run: cmake --build ${{github.workspace}}/build 
     - name: Basic Tests
