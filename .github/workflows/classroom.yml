@@ -11,8 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor != 'github-classroom[bot]'
     steps:
+    - name: Install packages
+      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev flex bison shelltestrunner
     - name: Checkout code
       uses: actions/checkout@v4
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     - name: Basic Tests
       id: basic-tests
       uses: classroom-resources/autograding-command-grader@v1
