@@ -2,16 +2,19 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <pwd.h>
 
 #include "command.h"
 #include "parser.h"
 
 char name[256];
+struct passwd* pwd;
 
 void
 issuePrompt(FILE *pf)
 {
-    fprintf(pf, "%s> ", name);
+    fprintf(pf, "%s%%> ", name);
     fflush(pf);
 }
 
@@ -19,18 +22,21 @@ void applyRedirection(command *cmd){
 
 }
 
-void runCommand(command *cmd){
-
-}
-
 void changeDirectory(command *cmd){
-    printf("command: ");
-    printCommand(cmd, stdout);
-    printf("\nArguments:");
-    printArguments(cmd->pa, stdout);
-    printf("\n");
+    if(cmd->pa->nArgs == 1){
+        printf("Returning to home directory\n");
+        pwd = getpwent();
+        chdir(pwd->pw_dir);
+    }else{
+        if(cmd->pa->nArgs > 2){
+            fprintf(stderr, "Too many arguments\n");
+        }else if(chdir(cmd->pa->azArgs[1]) != 0){
+            perror("invalid path");
+        }
+    }
 }
 
+//requires a linked list data structure.
 void setEnVars(){
 
 }
@@ -39,6 +45,7 @@ void unsetEnVars(){
 
 }
 
+//requires a map data structure
 void alias(){
 
 }
@@ -71,8 +78,18 @@ void processCommands(FILE *pf, int interactive)
             }else if(strcmp(cmd->zCmd, "quit") == 0){
                 exit(0);
             }else{
-                //if the command given is not a built in command, run it.
-
+                //if the command given is not a builtin command, run it.
+                int pid = fork();
+                if(pid != 0){
+                    waitpid(pid, NULL, 0);
+                }else{
+                    //basic cmd execution, need to handle redirections
+                    //and environment passthrough variables.
+                    char* envp = NULL;
+                    //add string token to find the path for running the command
+                    //must handle relative and absolute paths for a given command
+                    execve(cmd->zCmd, cmd->pa->azArgs, &envp);
+                }
             }
             //fprintf(stdout, "\n");
 	    cmd = cmd->pcNext;
