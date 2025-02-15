@@ -43,5 +43,3 @@ int main(int argc, char *argv[])
     ish::processCommands(std::cin, std::cout, true);
     return 0;
 }
-
-
