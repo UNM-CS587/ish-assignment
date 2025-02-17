@@ -50,9 +50,7 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                         ostr << "No arguments for cd, I should cd home\n";
                         //How do I figure out the home directory? Usually that's one of the environment vars... we can't use getenv, but we can use getpwuid()...
                         int uid = getuid();
-                        ostr << "uid: " << uid << "\n";
                         std::string homedir = getpwuid(uid)->pw_dir;
-                        ostr << "homedir: " << homedir << "\n";
                         //Now I just need to use a syscall
                         if(std::filesystem::exists(homedir.c_str())){
                             if(std::filesystem::is_directory(homedir.c_str())){
