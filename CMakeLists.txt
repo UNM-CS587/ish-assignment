@@ -13,7 +13,7 @@ add_subdirectory(src)
 
 # Comment out this line if you're Patrick testing his implementation 
 # (not provided) versus the testcases.
-# add_subdirectory(sample)
+#add_subdirectory(sample)
 
 enable_testing()
 add_subdirectory(test)

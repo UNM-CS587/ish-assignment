@@ -8,12 +8,16 @@ add_test(NAME BasicTests
                            -DSHELL=$<TARGET_FILE:ish> 
                            -DHOME=${HOME_DIR} basic.test
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-	
+add_custom_target(BasicTests
+                  COMMAND ctest -R BasicTests)
+
 add_test(NAME BasicErrors 
          COMMAND shelltest -DPROMPT=${host_name}% 
                            -DSHELL=$<TARGET_FILE:ish> 
                            -DHOME=${HOME_DIR} basic-error.test
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+add_custom_target(BasicErrors
+                  COMMAND ctest -R BasicErrors)
 	
 add_test(NAME BuiltinTests 
          COMMAND shelltest -DPROMPT=${host_name}% 
