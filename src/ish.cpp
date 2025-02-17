@@ -27,7 +27,16 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
              l = input.end();
         if (ish::parser::parseCommands(f, l, output))  {
             for (auto &cmd: output) {
-                ostr << cmd << "\n";
+                //Debug point: prints out the entire command set, arguments and any parsed redirections. 
+                //ostr << cmd << "\n";
+
+                //THIS IS WHERE ALL THE BUILT-INS NEED TO BE HANDLED.
+                //This is how  you get the command name
+                ostr << cmd.getName() << "\n";
+                if (cmd.getName() == "quit"){
+                    exit(0);
+                }
+
             }               
         } else {
             ostr << "Parse error: " << input << "\n";
