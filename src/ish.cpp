@@ -9,6 +9,7 @@ namespace ish {
 
 void issuePrompt(std::ostream &out)
 {
+    //TODO change this to "hostname% " and get the hostname somehow...
     out << "> " << std::flush;
 }
 
@@ -46,6 +47,7 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                     if (cmd.getArguments().size() == 0){
                         ostr << "No arguments for cd, I should cd home\n";
                         //How do I figure out the home directory? Usually that's one of the environment vars... 
+                        //TODO we're not actually allowed to use getenv, assume that HOME is going to be set by .ishrc and get it from our own internal struct for this. 
                         std::string homedir = getenv("HOME");
                         //Now I just need to use a syscall
                         if(std::filesystem::exists(homedir.c_str())){
@@ -71,10 +73,12 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                     ostr << "about to cd to: " << target_dir << "\n";
                     //gotta check to see if the path given is actually a directory and not just a regular file
                     //also gotta check to see if the path is real. Need to validate it somehow. 
+                    //TODO also need to check to see if we have permissions to read that file. 
                     if(std::filesystem::exists(target_dir.c_str())){
                         if(std::filesystem::is_directory(target_dir.c_str())){
                             chdir(target_dir.c_str());
                         } else {
+                            //TODO Does this need to be a perror()?
                             ostr << "Error: Path is not a directory\n";
                         }
 
@@ -82,6 +86,40 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                         ostr << "Error: Path does not exist\n";
                     }
                 }
+
+                if (cmd.getName() == "setenv"){
+                    //TODO
+                }
+
+                if (cmd.getName() == "unsetenv"){
+                    //TODO
+                }
+
+                if (cmd.getName() == "alias"){
+                    //TODO
+                }
+
+                if (cmd.getName() == "unalias"){
+                    //TOOD
+                }
+
+                if (cmd.getName() == "bg"){
+                    //README makes it sound like we don't have to implement this yet. 
+                }
+
+                if (cmd.getName() == "fg"){
+                    //README makes it sound like we don't have to implement this yet. 
+                }
+
+                if (cmd.getName() == "jobs"){
+                    //README makes it sound like we don't have to implement this yet. 
+                }
+
+                if (cmd.getName() == "kill"){
+                    //README makes it sound like we don't have to implement this yet. 
+                }
+
+                //TODO If we get here, the command is not a builtin, and we should assume it's a command the user specified, check the file exists, check the permissions to see if its executable, fork exec etc. 
 
             }               
         } else {
@@ -95,6 +133,14 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
 
 int main(int argc, char *argv[])
 {
+    //TODO create a structure of some kind to manage the environment variables. 
+
+    //TODO read in PATH environment var, put that into the structure above. TODO do we assume that PATH is going to come from .ishrc, or are we allowed to use getenv for this particular environment var?
+    //I asked my question in the discord. 
+
+    //TODO need to setup handling of the TERM signal
+
+    //TODO need to read in the ./ishrc file, maybe call "processCommands" on this file.
     ish::processCommands(std::cin, std::cout, true);
     return 0;
 }
