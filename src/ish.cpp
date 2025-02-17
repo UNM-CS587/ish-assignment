@@ -11,7 +11,6 @@ namespace ish {
 
 void issuePrompt(std::ostream &out)
 {
-    //TODO change this to "hostname% " and get the hostname somehow...
     char hostname[1024];
     if (gethostname(hostname, 1024) != 0){
         perror("Could not get hostname\n");
@@ -95,37 +94,61 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
 
                 if (cmd.getName() == "setenv"){
                     //TODO
+                    continue;
                 }
 
                 if (cmd.getName() == "unsetenv"){
                     //TODO
+                    continue;
                 }
 
                 if (cmd.getName() == "alias"){
                     //TODO
+                    continue;
                 }
 
                 if (cmd.getName() == "unalias"){
                     //TOOD
+                    continue;
                 }
 
                 if (cmd.getName() == "bg"){
-                    //README makes it sound like we don't have to implement this yet. 
+                    //README makes it sound like we don't have to implement this yet.
+                    continue; 
                 }
 
                 if (cmd.getName() == "fg"){
-                    //README makes it sound like we don't have to implement this yet. 
+                    //README makes it sound like we don't have to implement this yet.
+                    continue; 
                 }
 
                 if (cmd.getName() == "jobs"){
-                    //README makes it sound like we don't have to implement this yet. 
+                    //README makes it sound like we don't have to implement this yet.
+                    continue; 
                 }
 
                 if (cmd.getName() == "kill"){
-                    //README makes it sound like we don't have to implement this yet. 
+                    //README makes it sound like we don't have to implement this yet.
+                    continue; 
                 }
 
                 //TODO If we get here, the command is not a builtin, and we should assume it's a command the user specified, check the file exists, check the permissions to see if its executable, fork exec etc. 
+                //Check to see if it exists.
+                if(std::filesystem::exists(cmd.getName().c_str())){
+                    //Check to make sure it's not a directory
+                    if(std::filesystem::is_regular_file(cmd.getName().c_str())){
+                        //Check to make sure we have permissions for the file. 
+                        if(access(cmd.getName().c_str(), X_OK) == 0){
+                            //Existence, filetype and perms checked ok time to fork/exec
+                            //TODO Actually fork and exec
+                        }
+                    } else {
+                        perror("File is not regular (directory, or something else)\n");
+                    }
+
+                } else {
+                    perror("File does not exist\n");
+                }
 
             }               
         } else {
