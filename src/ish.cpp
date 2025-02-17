@@ -52,11 +52,11 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                             if(std::filesystem::is_directory(homedir.c_str())){
                                 chdir(homedir.c_str());
                             } else {
-                                "Error: Path is not a directory\n";
+                                ostr <<"Error: Path is not a directory\n";
                             }
 
                         } else {
-                            "Error: Path does not exist\n";
+                            ostr << "Error: Path does not exist\n";
                         }
                         continue;
                     }
@@ -68,18 +68,18 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                     }
 
                     std::string target_dir = cmd.getArguments()[0];
-                    ostr << "about to cd to: " << args << "\n";
+                    ostr << "about to cd to: " << target_dir << "\n";
                     //gotta check to see if the path given is actually a directory and not just a regular file
                     //also gotta check to see if the path is real. Need to validate it somehow. 
                     if(std::filesystem::exists(target_dir.c_str())){
                         if(std::filesystem::is_directory(target_dir.c_str())){
                             chdir(target_dir.c_str());
                         } else {
-                            "Error: Path is not a directory\n";
+                            ostr << "Error: Path is not a directory\n";
                         }
 
                     } else {
-                        "Error: Path does not exist\n";
+                        ostr << "Error: Path does not exist\n";
                     }
                 }
 
