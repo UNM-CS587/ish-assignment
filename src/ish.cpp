@@ -4,6 +4,8 @@
 #include <ostream>
 #include <istream>
 #include <filesystem>
+#include <sys/types.h>
+#include <pwd.h>
 
 namespace ish {
 
@@ -46,9 +48,11 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
                     //Check to see if cd has any arguments.
                     if (cmd.getArguments().size() == 0){
                         ostr << "No arguments for cd, I should cd home\n";
-                        //How do I figure out the home directory? Usually that's one of the environment vars... 
-                        //TODO we're not actually allowed to use getenv, assume that HOME is going to be set by .ishrc and get it from our own internal struct for this. 
-                        std::string homedir = getenv("HOME");
+                        //How do I figure out the home directory? Usually that's one of the environment vars... we can't use getenv, but we can use getpwuid()...
+                        int uid = getuid();
+                        ostr << "uid: " << uid << "\n";
+                        std::string homedir = getpwuid(uid)->pw_dir;
+                        ostr << "homedir: " << homedir << "\n";
                         //Now I just need to use a syscall
                         if(std::filesystem::exists(homedir.c_str())){
                             if(std::filesystem::is_directory(homedir.c_str())){
