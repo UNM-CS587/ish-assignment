@@ -25,7 +25,7 @@ jobs:
       with:
         test-name: Basic Tests
         setup-command: ''
-        command: ctest -R BasicTests
+        command: ctest -R BasicTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 30
     - name: Basic Errors
