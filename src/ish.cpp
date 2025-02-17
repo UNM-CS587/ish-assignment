@@ -12,7 +12,11 @@ namespace ish {
 void issuePrompt(std::ostream &out)
 {
     //TODO change this to "hostname% " and get the hostname somehow...
-    out << "> " << std::flush;
+    char hostname[1024];
+    if (gethostname(hostname, 1024) != 0){
+        perror("Could not get hostname\n");
+    }
+    out << hostname << "% " << std::flush;
 }
 
 void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
