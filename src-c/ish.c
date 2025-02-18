@@ -18,7 +18,7 @@ void processCommands(FILE *pf, int interactive)
     resetParser(pf);
     do {
         command *cmd;
-        if (interactive) issuePrompt(pf);
+        if (interactive) issuePrompt(stdout);
         first = cmd = nextCommand(&eof);
         while (cmd) {
             printCommand(cmd, stdout); 
