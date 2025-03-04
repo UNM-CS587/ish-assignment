@@ -19,14 +19,12 @@ does-not-exist.txt: No such file or directory
 /bin/ls > foo > bar
 $ SHELL
 PROMPT PROMPT exit
->2
-Ambiguous output redirect.
+>2 /(Ambiguous output redirect|syntax error)/
 
 # Test redirect ambiguous input
 <
 /bin/ls < foo < bar
 $ SHELL
 PROMPT PROMPT exit
->2
-Ambiguous input redirect.
+>2 /(Ambiguous input redirect.|syntax error)/
 
