@@ -50,7 +50,11 @@ quotes		['"]
 redirect	[<>]
 alpha 		[A-Za-z]
 number 		[0-9]
-others		[+,%_#@$.*/:!?-]
+lcurly          \{
+rcurly          \}
+lparen          \(
+rparen          \)
+others          [+,%_#@$.*/:!?-]|{lcurly}|{rcurly}|{lparen}|{rparen}
 backspecial	{backslash}({separator}|{redirect}|{eoln}|{spaces}|{number}|{alpha}|{others}|{backslash}|{quotes}|&)
 nonquotes	({alpha}|{number}|{backspecial}|{others}|{spaces}|{eoln}|{redirect})
 dquoteseq	{dq}(({nonquotes}|{sq})*){dq}

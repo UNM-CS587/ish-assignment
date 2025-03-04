@@ -44,8 +44,10 @@ namespace x3 = boost::spirit::x3;
  * are in each of them
  */
 auto const eoln = x3::eol;
-auto const ishpunct = x3::char_(",./`!@#$%^*=+") | x3::char_('-') | x3::char_('_');
-
+auto const ishpunct = x3::char_(",./`!@#$%^*=+") 
+                      | x3::char_('-') | x3::char_('_')
+                      | x3::char_('{') | x3::char_('}')
+                      | x3::char_('(') | x3::char_(')');
 // Escape handling courtesy of 
 // https://stackoverflow.com/questions/61695235/creating-a-boostspiritx3-parser-for-quoted-strings-with-escape-sequence-hand
 auto const escapes = "\\n" >> x3::attr('\n')
