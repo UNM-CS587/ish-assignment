@@ -7,46 +7,52 @@
   * In-class Code Test: Monday, September 7, 2026, 9:00am
 
 ## Assignment Overview
-Your task is to design and implement a basic UNIX command shell in a provided C++ framework 
-with the assistance of AI coding agents. 
-As part of this task, you also have to convince your boss (the class instructor) that:
+Your task is to design and implement a basic UNIX command shell in a provided
+C++ framework with the assistance of AI coding agents. As part of this task, 
+you also have to convince your boss (the class instructor) that:
   1. You actually understand the key concepts of the problem you're solving 
-  2. The completed program actually solves the problem generally instead of regurgitating answers 
-     to the provided test cases
-The features you must implement and demonstrate understanding of for full credit do not include 
-pipelines or job control; however, you may implement and demonstrate understand of these features 
-for extra credit.
+  2. The completed program actually solves the problem generally instead of 
+     regurgitating answers to the provided test cases
+The features you must implement and demonstrate understanding of for full 
+credit do not include pipelines or job control; however, you may implement, 
+test, and demonstrate understanding of these features for extra credit.
 
 For this assignment, you will:
-  1. Turn in a github repository that includes all of your source code, test cases, and revsion
-     history. This revision history should document your development process as you incrementally
-     add features to the shell, including any AI prompting associated with these commites. If you 
-     submit a repository with minimal revision history (e.g. a single commit to the main branch 
-     that implements all features), you will be required to meet with the professor and explain 
-     your development process and code.
-  2. Turn in a written report describing the high-level approach that your source code uses to 
-     providing the key features you implemented.
-  3. Take an in-class, closed-book test on how your shell implements these key features.
-*Your final grade on this assignment will be the minimum of your grade on these three components.
-Correct code without demonstrated understanding will receive no credit!*
+  1. Turn in a github repository that includes all of your source code, test 
+     cases, and revision history. This revision history should document your 
+     development process as you incrementally add features to the shell, 
+     including any AI prompting and token usage associated with these commits. 
+     If you submit a repository with minimal revision history (e.g. a single 
+     commit to the main branch that implements all features), you will be 
+     required to meet with the professor and explain your development process 
+     and code to receive credit.
+  2. Turn in a written report describing the high-level approach that your 
+     source code uses to providing the key features you implemented (as a LaTeX
+     document in the turned-in github repository).
+  3. Take an in-class, closed-book test on how your shell implements these key 
+     features.
+*Your final grade on this assignment will be the minimum of your grade on 
+these three components.  Correct code that passes all test cases without 
+demonstrated understanding will receive no credit!*
 
 ## Required Program Features
 
-Your shell *must* use the C++ parser parser provided in the src/ directory and implement a subset of 
-the features described in the included ISH manual page (ish.man/pdf). Notably, you do *not* need 
-to implement job control or pipelines, though you may implement job control and piplines, along with
-test cases that demonstrate their correctness for 10% extra credit each (10% for job control, 15% for 
-pipelines).
+Your shell *must* use the C++ parser parser provided in the src/ directory and 
+implement a subset of the features described in the included ISH manual page 
+(ish.man.pdf). Notably, you do *not* need to implement job control or pipelines,
+though you may implement job control and piplines, along with test cases that 
+demonstrate their correctness for up to 25% extra credit (10% for job control,
+15% for pipelines).
 
 The basic features you are required to implement for full credit are:
-  * Basic command execution - 25%
+  * Basic command execution
     * Correct shell prompt as described in the manual page
     * Run command with full command name
     * Run command with full command name and arguments
     * 'cd' builtin works (check with /bin/pwd)
     * `quit` builtin and EOF cause shell to exit properly and cleanly
 
-  * Envirionment and alias handling - 25%
+  * Envirionment and alias handling
     * Environment variables correctly passed to child
     * PATH searching works
     * PATH in wrong syntax handled well
@@ -55,10 +61,10 @@ The basic features you are required to implement for full credit are:
     * Adding an alias works
     * Removing an alias works
 
-  * Miscellaneous - 10%
+  * Miscellaneous
     * .ishrc executed properly
 
-  * File redirection - 25%
+  * File redirection
     * Redirect output to a simople file
     * Appending to a file works
     * Redirection of stdout and stderr works
@@ -66,9 +72,14 @@ The basic features you are required to implement for full credit are:
     * Ambiguous redirections are detected and reported
     * Redirection of both input and output works.
 
-  * Error handling - 15%
+  * Error handling
     * The shell should fail gracefully and report errors like `csh` does when permissions or something else goes wrong doing thie things described above.
-   
+
+The breakdown of scoring for these features is provided in the test cases that
+run on commits to the main branch and run from the file 
+.github/worflows/classtests.yaml; the resutls of this test can be seen in the
+github actions runner when you commit to your main branch.
+
 The features you //may// implement for extra credit that are described in the ISH man page are:
   * Job control (the & separator, ^Z handling, and the bg/fg/jobs builtins) - 10%
   * Pipelines - 15%
@@ -88,7 +99,21 @@ Here describe the AI coding tools provided to the students through AI-Verde.
 
 ## Testing
 
-Testcases that test correctness of the shell output and of key shell components are included in the provided repository. These tests are only run on pulls to the main branch. I encourage you   will be provided approximately one week after the assignment is posted. Additional tests that test your shell error handling will be used for final testing ofyour program. A pull request will be submitted to your github repository adding test features when these testcases are available.
+Testcases that test correctness of the shell output and of key shell components
+are included in the provided repository. Specifically:
+  - Class gradding tests on which your shell is graded are specifed in the 
+    classtests/ directory and are run by the github workflow described in 
+    .github/workflows/classtests.yaml; these tests are purely operational and 
+    work by executing the shell on commit to the main branch. //Do not change 
+    classroom.yaml or any of the tests in the classtests/ directory. Changing
+    class testing infrastructure to increase your grade will be handled as
+    academic dishonesty.// 
+  - Infrastructure for student tests which are run on commit to the main and 
+    develop branch is provided in the tests/ directory and are directed by the 
+    workflow specified in .github/workflows/studenttests.yaml. I have provided 
+    google test testcases for the C++ parser already and encorage you to add 
+    your own tests to run as you develop your shell. Unless you are doing extra
+    credit parts of the assignment, these tests will not impact your grade.
 
 ## Assignment submission
 
