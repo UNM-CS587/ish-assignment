@@ -7,10 +7,6 @@ project(UNM-CS887-ISH)
 
 add_subdirectory(src)
 
-# Comment out the line above and uncomment this instead if you want 
-# to use the old C parser instead of the new C++ parser.
-#add_subdirectory(src-c) 
-
 # Comment out this line if you're Patrick testing his implementation 
 # (not provided) versus the testcases.
 #add_subdirectory(sample)

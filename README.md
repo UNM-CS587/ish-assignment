@@ -3,20 +3,50 @@
 # CS587 - Advanced Operating Systems Project 1: The `ish` shell
 
 ## Due Date
-  * Due Date: Monday, March 3, 2025, 11:59pm
+  * Code and Report Due Date: Sunday, September 6, 2026, 11:59pm
+  * In-class Code Test: Monday, September 7, 2026, 9:00am
 
-## Overview
-Your task is to implement---on your own---a basic Unix command shell. Your shell *must* use either the provided C (src-c/) or C++ parser (src/), and implement a subset of the features described in the included ISH manual page. Notably, you do *not* need to implement job control or pipelines. 
+## Assignment Overview
+Your task is to design and implement a basic UNIX command shell in a provided C++ framework 
+with the assistance of AI coding agents. 
+As part of this task, you also have to convince your boss (the class instructor) that:
+  1. You actually understand the key concepts of the problem you're solving 
+  2. The completed program actually solves the problem generally instead of regurgitating answers 
+     to the provided test cases
+The features you must implement and demonstrate understanding of for full credit do not include 
+pipelines or job control; however, you may implement and demonstrate understand of these features 
+for extra credit.
 
-The basic features you need to implement are:
-  * Basic command execution
+For this assignment, you will:
+  1. Turn in a github repository that includes all of your source code, test cases, and revsion
+     history. This revision history should document your development process as you incrementally
+     add features to the shell, including any AI prompting associated with these commites. If you 
+     submit a repository with minimal revision history (e.g. a single commit to the main branch 
+     that implements all features), you will be required to meet with the professor and explain 
+     your development process and code.
+  2. Turn in a written report describing the high-level approach that your source code uses to 
+     providing the key features you implemented.
+  3. Take an in-class, closed-book test on how your shell implements these key features.
+*Your final grade on this assignment will be the minimum of your grade on these three components.
+Correct code without demonstrated understanding will receive no credit!*
+
+## Required Program Features
+
+Your shell *must* use the C++ parser parser provided in the src/ directory and implement a subset of 
+the features described in the included ISH manual page (ish.man/pdf). Notably, you do *not* need 
+to implement job control or pipelines, though you may implement job control and piplines, along with
+test cases that demonstrate their correctness for 10% extra credit each (10% for job control, 15% for 
+pipelines).
+
+The basic features you are required to implement for full credit are:
+  * Basic command execution - 25%
     * Correct shell prompt as described in the manual page
     * Run command with full command name
     * Run command with full command name and arguments
     * 'cd' builtin works (check with /bin/pwd)
     * `quit` builtin and EOF cause shell to exit properly and cleanly
 
-  * Envirionment and alias handling
+  * Envirionment and alias handling - 25%
     * Environment variables correctly passed to child
     * PATH searching works
     * PATH in wrong syntax handled well
@@ -25,10 +55,10 @@ The basic features you need to implement are:
     * Adding an alias works
     * Removing an alias works
 
-  * Miscellaneous
+  * Miscellaneous - 10%
     * .ishrc executed properly
 
-  * File redirection
+  * File redirection - 25%
     * Redirect output to a simople file
     * Appending to a file works
     * Redirection of stdout and stderr works
@@ -36,26 +66,29 @@ The basic features you need to implement are:
     * Ambiguous redirections are detected and reported
     * Redirection of both input and output works.
 
-  * Error handling
+  * Error handling - 15%
     * The shell should fail gracefully and report errors like `csh` does when permissions or something else goes wrong doing thie things described above.
    
-The features you do //not// need to implement that are described in the ISH man page are:
-  * Job control (the & separator, ^Z handling, and the bg/fg/jobs builtins)
-  * Pipelines
+The features you //may// implement for extra credit that are described in the ISH man page are:
+  * Job control (the & separator, ^Z handling, and the bg/fg/jobs builtins) - 10%
+  * Pipelines - 15%
 
 ## Starter Source Code and Programming Assignment Restrictions 
 
-Your shell should be written in C or C++, compile using cmake, and produce an executable named `ish`. I have provided a C++ parser for the subset of 'ish' assigned in this assignment in the src/ directory; the C++ starter code does *not* parse pipelines as they are not required for this assignment. In addition, I have also provided C starter code in the src-c director that you may use if you prefer. To use this code, change the CMakeLists.txt in the top-level directory to point to the src-c/ directory instead of the src/ to find its source code.
+Your shell should be written in C++, compile using cmake, and produce an executable named `ish`. I have provided a C++ parser for the subset of 'ish' assigned in this assignment in the src/ directory; the C++ starter code does *not* parse pipelines as they are not required so, to receive credit for pipeline extra credit, you will need to modify the parser to handle pipelines.
 
-Your code must also be "clean" -- it should compile without warnings or unresolved references ion a standard UNIX system with the Boost C++ libraries installed. I will provide a GitHub Codespace with the appropriate setup for developing your program shortly after the assignment becomes available. I encourage you to use GitHub Codespaces for development, as if you have problems I can connect to your codespace and help you debug your program. Your programs are expected to be well organized and easy to read, as well as correct.
-
-You //must//, use either the C++ or C parsers provided to implement your shell. You may modify these parsers if necessary (e.g. if you want to change the parser to detect builtin commands or add extra functionality to the command structure/class provided), but the general structure of the parser *must remain the same*. You may *not* use your own custom parser or one taken from elsewhere.
+Your code must also be "clean" -- it must compile without warnings or unresolved references on a standard UNIX system with the Boost C++ libraries installed. The pre-provided test environment uses an Ubuntu container for testing. I have tested the provided code on the CS department Ubuntu systems, on Ubuntu running on WSL2 on a Windows systems, and MacOS. Your programs are expected to be well organized and easy to read, as well as correct.
 
 You must use the `fork` and `execve` C system calls to start new processes and the `dup` or `dup2` command to handle file redirection. You may *not* use other variants of `exec` or the `system` call, their C++ equivalents, or any other mechanism for creating processes or redirecting file I/O.
 
+## Provided of AI Coding Tools
+You are //expected// to use AI coding tools to complete this assignment - while it is feasible to manually complete this assignment in the provided time, one of the goals of this assignment is to ensure you are comfortable with modern AI software engineering tools so that later in the semester we can use those tools to implement, evaluate, and analyze modern systems techniques that would //not// be feasible to code by hand in the provided time.
+
+Here describe the AI coding tools provided to the students through AI-Verde.
+
 ## Testing
 
-Testcases that test correctness and constitute 85% of the grade of the shell will be provided approximately one week after the assignment is posted. Additional tests that test your shell error handling will be used for final testing ofyour program. A pull request will be submitted to your github repository adding test features when these testcases are available.
+Testcases that test correctness of the shell output and of key shell components are included in the provided repository. These tests are only run on pulls to the main branch. I encourage you   will be provided approximately one week after the assignment is posted. Additional tests that test your shell error handling will be used for final testing ofyour program. A pull request will be submitted to your github repository adding test features when these testcases are available.
 
 ## Assignment submission
 
