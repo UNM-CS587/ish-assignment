@@ -44,7 +44,7 @@ namespace x3 = boost::spirit::x3;
  * are in each of them
  */
 auto const eoln = x3::eol;
-auto const ishpunct = x3::char_(",./`!@#$%^*=+") 
+auto const ishpunct = x3::char_(",./`!@#$%^*=+:")
                       | x3::char_('-') | x3::char_('_')
                       | x3::char_('{') | x3::char_('}')
                       | x3::char_('(') | x3::char_(')');
@@ -78,10 +78,10 @@ auto const token = x3::rule<class token, std::string>()
             for (auto c : _attr(context))
             {
                 if (c.type() == typeid(char)) {
-                    tk.push_back(get<char>(c));
+                    tk.push_back(boost::get<char>(c));
                 }
                 else if ( c.type() == typeid(std::string)) {
-                    tk.append(get<std::string>(c));
+                    tk.append(boost::get<std::string>(c));
                 }
             }
 
@@ -110,8 +110,8 @@ const x3::rule<class redirect_rule, std::pair<enum redirection_type, std::string
 auto const redirect_def = (redirection_type_symbols >> token)[(
     [](auto &context)
     {
-            enum redirection_type redir = at_c<0>(_attr(context));
-            auto & path = at_c<1>(_attr(context));
+            enum redirection_type redir = boost::fusion::at_c<0>(_attr(context));
+            auto & path = boost::fusion::at_c<1>(_attr(context));
             auto r = make_pair(redir, std::move(path));
             _val(context) = std::move(r);
     })];
@@ -127,16 +127,16 @@ const x3::rule<class commandel_rule, class ish::command> commandel = "commandel"
 auto const commandel_def = (token >> *(token|redirect))[(
     [](auto& context)
     {
-        auto& command_path = at_c<0>(_attr(context));
-        const auto& redir_or_args_list = at_c<1>(_attr(context));
+        auto& command_path = boost::fusion::at_c<0>(_attr(context));
+        const auto& redir_or_args_list = boost::fusion::at_c<1>(_attr(context));
         class ish::command cmd(std::move(command_path));
 
         for (const auto& redir_or_arg: redir_or_args_list) {
             if (redir_or_arg.type() == typeid(std::pair<enum redirection_type,std::string>)) {
-                auto r = get<std::pair<enum redirection_type, std::string>>(redir_or_arg);
-                cmd.registerRedirection(get<0>(r), get<1>(r));
+                auto r = boost::get<std::pair<enum redirection_type, std::string>>(redir_or_arg);
+                cmd.registerRedirection(r.first, r.second);
             } else if (redir_or_arg.type() == typeid(std::string)) {
-                auto args = get<std::string>(redir_or_arg);
+                auto args = boost::get<std::string>(redir_or_arg);
                 cmd.registerArgument(args);
             } else {
                 std::cerr << "Invalid redirection typeid\n";
