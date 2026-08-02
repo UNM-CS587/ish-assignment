@@ -12,4 +12,5 @@ add_subdirectory(src)
 #add_subdirectory(sample)
 
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(classtest)
+add_subdirectory(studenttest)

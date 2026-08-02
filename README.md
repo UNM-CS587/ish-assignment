@@ -77,7 +77,7 @@ The basic features you are required to implement for full credit are:
 
 The breakdown of scoring for these features is provided in the test cases that
 run on commits to the main branch and run from the file 
-.github/worflows/classtests.yaml; the resutls of this test can be seen in the
+.github/worflows/classtests.yml; the resutls of this test can be seen in the
 github actions runner when you commit to your main branch.
 
 The features you //may// implement for extra credit that are described in the ISH man page are:
@@ -103,14 +103,14 @@ Testcases that test correctness of the shell output and of key shell components
 are included in the provided repository. Specifically:
   - Class gradding tests on which your shell is graded are specifed in the 
     classtests/ directory and are run by the github workflow described in 
-    .github/workflows/classtests.yaml; these tests are purely operational and 
+    .github/workflows/classtests.yml; these tests are purely operational and 
     work by executing the shell on commit to the main branch. //Do not change 
-    classroom.yaml or any of the tests in the classtests/ directory. Changing
+    classroom.yml or any of the tests in the classtests/ directory. Changing
     class testing infrastructure to increase your grade will be handled as
     academic dishonesty.// 
   - Infrastructure for student tests which are run on commit to the main and 
     develop branch is provided in the tests/ directory and are directed by the 
-    workflow specified in .github/workflows/studenttests.yaml. I have provided 
+    workflow specified in .github/workflows/studenttests.yml. I have provided 
     google test testcases for the C++ parser already and encorage you to add 
     your own tests to run as you develop your shell. Unless you are doing extra
     credit parts of the assignment, these tests will not impact your grade.
