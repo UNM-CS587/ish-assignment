@@ -23,7 +23,7 @@ jobs:
         cd build
         ./studenttest/parser_test --gtest_output="xml:student-test-results.xml" || true
     - name: Publish Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v3
       if: always() # Ensures report runs even if previous build steps had failed tests
       with:
         name: 'Student Test Results'
