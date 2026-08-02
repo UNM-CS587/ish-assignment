@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Install packages
-      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev flex bison libfl2 libfl-dev shelltestrunner libgtest-dev
+      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev shelltestrunner texlive-latex-base latexmk
     - name: Checkout code
       uses: actions/checkout@v4
     - name: Configure CMake
