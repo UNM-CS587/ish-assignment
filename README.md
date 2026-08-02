@@ -8,30 +8,30 @@
 Your task is to design and implement a basic UNIX command shell in a provided
 C++ framework with the assistance of AI coding agents. As part of this task, 
 you also have to convince your boss (the class instructor) that:
-  1. You actually understand the key concepts of the problem you're solving 
-  2. The completed program actually solves the problem generally instead of 
+  1. You actually understand the key concepts of the problem you're solving
+  2. The completed program actually solves the problem generally instead of
      regurgitating answers to the provided test cases
-The features you must implement and demonstrate understanding of for full 
-credit do not include pipelines or job control; however, you may implement, 
+The features you must implement and demonstrate understanding of for full
+credit do not include pipelines or job control; however, you may implement,
 test, and demonstrate understanding of these features for extra credit.
 
 For this assignment, you will:
-  1. Turn in a github repository that includes all of your source code, test 
-     cases, and revision history. This revision history should document your 
-     development process as you incrementally add features to the shell, 
-     including any AI prompting and token usage associated with these commits. 
+  1. Turn in a github repository that includes all of your source code, test
+     cases, and revision history. This revision history should document your
+     development process as you incrementally add features to the shell,
+     including any AI prompting and token usage associated with these commits.
      If you submit a repository with minimal revision history (e.g. a single 
-     commit to the main branch that implements all features), you will be 
-     required to meet with the professor and explain your development process 
-     and code to receive credit.
+     commit to the main branch that implements all features), you will be
+     required to meet with the professor,explain your development process
+     and code, and demonstrate that you understand the code to receive credit.
   2. Turn in a written report describing the high-level approach that your 
      source code uses to providing the key features you implemented (as a LaTeX
      document in the turned-in github repository - source code in report/report.tex,
      which the build system will compile into report.pdf).
-  3. Take an in-class, closed-book test on how your shell implements these key 
+  3. Take an in-class, closed-book test on how your shell implements these key
      features.
 *Your final grade on this assignment will be the minimum of your grade on 
-these three components.  Correct code that passes all test cases without 
+these three components.  Correct code that passes all test cases without
 demonstrated understanding will receive no credit!*
 
 ## Required Program Features
@@ -72,29 +72,68 @@ The basic features you are required to implement for full credit are:
     * Redirection of both input and output works.
 
   * Error handling
-    * The shell should fail gracefully and report errors like `csh` does when permissions or something else goes wrong doing thie things described above.
+    * The shell should fail gracefully and report errors like `csh` does when 
+      permissions or something else goes wrong doing thie things described 
+      above.
 
 The breakdown of scoring for these features is provided in the test cases that
-run on commits to the main branch and run from the file 
+run on commits to the main branch and run from the file
 .github/worflows/classtests.yml; the resutls of this test can be seen in the
 github actions runner when you commit to your main branch.
 
-The features you //may// implement for extra credit that are described in the ISH man page are:
+The features you //may// implement for extra credit that are described in 
+the ISH man page are:
   * Job control (the & separator, ^Z handling, and the bg/fg/jobs builtins) - 10%
   * Pipelines - 15%
 
+If you are in doubt about the functionality of `ish` or how it should behave in a 
+particular situation, model the behavior on that of `csh`.  If you have specific 
+questions about the project, ask in the class Discord.
+
 ## Starter Source Code and Programming Assignment Restrictions 
 
-Your shell should be written in C++, compile using cmake, and produce an executable named `ish`. I have provided a C++ parser for the subset of 'ish' assigned in this assignment in the src/ directory; the C++ starter code does *not* parse pipelines as they are not required so, to receive credit for pipeline extra credit, you will need to modify the parser to handle pipelines.
+Your shell should be written in C++, compile using cmake, and produce an 
+executable named `ish`. I have provided a C++ parser for the subset of 
+'ish' assigned in this assignment in the src/ directory; the C++ starter 
+code does *not* parse background jobs or pipelines as they are not required;
+to complete the extra credit portions of the assignment, you will need to 
+modify the parser.
 
-Your code must also be "clean" -- it must compile without warnings or unresolved references on a standard UNIX system with the Boost C++ libraries installed. The pre-provided test environment uses an Ubuntu container for testing. I have tested the provided code on the CS department Ubuntu systems, on Ubuntu running on WSL2 on a Windows systems, and MacOS. Your programs are expected to be well organized and easy to read, as well as correct.
+Your code must also be "clean" -- it must compile without warnings or 
+unresolved references on a standard UNIX system with the Boost C++ libraries 
+installed. The pre-provided test environment uses an Ubuntu container for 
+testing. I have tested the provided code on the CS department Ubuntu systems, 
+on Ubuntu running on WSL2 on a Windows systems, and MacOS. Your programs are 
+expected to be well organized and easy to read, as well as correct. To compile
+on an Ubuntu system, make sure you ahve the following packages installed:
+  - libboost-all-dev 
+  - shelltestrunner 
+  - libgtest-dev
 
-You must use the `fork` and `execve` C system calls to start new processes and the `dup` or `dup2` command to handle file redirection. You may *not* use other variants of `exec` or the `system` call, their C++ equivalents, or any other mechanism for creating processes or redirecting file I/O.
+You must use the `fork` and `execve` C system calls to start new processes 
+and the `dup` or `dup2` command to handle file redirection. You may *not* use 
+other variants of `exec` or the `system` call, their C++ equivalents, or any 
+other mechanism for creating processes or redirecting file I/O.
 
-## Provided of AI Coding Tools
-You are //expected// to use AI coding tools to complete this assignment - while it is feasible to manually complete this assignment in the provided time, one of the goals of this assignment is to ensure you are comfortable with modern AI software engineering tools so that later in the semester we can use those tools to implement, evaluate, and analyze modern systems techniques that would //not// be feasible to code by hand in the provided time.
+## Provided AI Coding Tools
+You are //expected// to use AI coding tools to complete this assignment - 
+while it is feasible to manually complete this assignment in the provided 
+time, one of the goals of this assignment is to ensure you are comfortable 
+with modern AI software engineering tools so that later in the semester we 
+can use those tools to implement, evaluate, and analyze modern systems 
+techniques that would //not// be feasible to code by hand in the provided time.
 
-Here describe the AI coding tools provided to the students through AI-Verde.
+TODO: Here describe the AI coding tools provided to the students through 
+AI-Verde and the suggested AI software engineering workflow, including 
+claude/codex, connecting to the API, using AI Verde to select the model 
+being used and to keep track of the tokens used, and how this integrates 
+with github.
+
+# General development tools
+
+TODO: Provide advice on development tools. Fingers on keys being the most
+important one, but noting the useful packages in vscode they might want to 
+look at.
 
 ## Testing
 
@@ -114,18 +153,47 @@ are included in the provided repository. Specifically:
     your own tests to run as you develop your shell. Unless you are doing extra
     credit parts of the assignment, these tests will not impact your grade.
 
-## Assignment submission
+## Assignment download and submission
 
-You will use GitHub classroom to submit a working program on or before the due date. Be sure to commit and push all of your changes to the `main` branch on your repository prior to the due date!
+You will fork the main assignment repository provided by the class instructor
+for the class //in the class github organization.// Ths class instructor will then
+snapshot and grade your repository at the due time. Only your 'main' github 
+branch will be graded. You must ensure that your completed work is on this branch!
+Be sure to commit and push all of your changes to the `main` branch on your 
+repository prior to the due date!
 
 ## Supporting and Reference Materials
 
-Before starting, you should become familiar with the Unix system calls defined in Section 2. of the UNIX manual There are also several library routines in Section 3 that provide convenient interfaces to some of the more cryptic system calls. However, you may _not_ use the library routine `system` nor any of the routines prohibitied on the `ish` man page.  Several chapters of the Richard Stevens book _Advanced Programming in the UNIX Environment_ contain helpful information; Chapters 7, 8, and 9 are especially relevant, and this book is available online for free through the UNM library.
+Before starting, you should become familiar with the Unix system calls defined in
+Section 2 of the UNIX manual. There are also several library routines in Section 3 
+that provide convenient interfaces to some of the more cryptic system calls. However, 
+you may _not_ use the library routine `system` nor any of the routines prohibitied on 
+the `ish` man page.  Several chapters of the Richard Stevens book _Advanced Programming 
+in the UNIX Environment_ contain helpful information; Chapters 7, 8, and 9 are 
+especially relevant, and this book is available online for free through the UNM 
+library.
 
 ## Additional Advice
 
-To implement `ish`, you will be creating a process that forks off other processes, which in turn forks off more processes, etc. If you inadvertently fork too many processes, you will cause Unix to run out, making yourself and everyone else on the machine very unhappy. _Be careful about this.
+To implement `ish`, you will be creating a process that forks off other processes, which 
+in turn forks off more processes, etc. If you inadvertently fork too many processes, you 
+will cause Unix to run out, making yourself and everyone else on the machine very unhappy. 
+_Be careful about this._
 
-If you are in doubt about the functionality of `ish` or how it should behave in a particular situation, model the behavior on that of `csh`.  If you have specific questions about the project, ask in Discord. 
-
-A few final bits of advice. First, and most importantly, get started early; you almost certainly have a lot to learn before you can start implementing anything.  Second, once you have a good understanding of what you are being asked to do, I strongly suggest that you develop a detailed design, implementation, and testing plan.  My personal style is to get functionality working one step at a time, for example, processing of simple commands, then environment handling and PATH searching, then I/O redirection. 
+A few final bits of advice:
+  - First, and most importantly, get started early; you almost certainly have a lot to 
+    learn about AI workflows, github software engineering workflows, and UNIX process 
+    management, before you can start implementing anything. 
+  - Second, once you have a good understanding of what you are being asked to do, work
+    //one feature at a time in a separate feature branch of develop// in collaboration 
+    with the provided AI models to design, create test cases for, implement, and document
+    (in report.tex) those features.
+  - Use pull requests to merge individual features to the develop branch as they are 
+    completed, paying attention to previous test cases to make sure they don't break 
+    as you develop new features. Note that by default, the develop branch is protected
+    so only pull reqeusts that pass all of their test cases can be merged to develop.
+  - As developed features are completed and documented, periodically use pull requests 
+    to merge features to 'main' and ensure that hte class tests are also making 
+    progress. While having separate 'main' and 'develop' branches is not necessary on
+    a project of this scale, it is good practice to get into in preparation for the 
+    larger projects you will be working on later this semester.
