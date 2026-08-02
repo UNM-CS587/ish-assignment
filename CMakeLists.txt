@@ -11,10 +11,13 @@ endif()
 
 add_subdirectory(src)
 
-# Comment out this line if you're Patrick testing his implementation 
-# (not provided) versus the testcases.
-#add_subdirectory(sample)
+add_subdirectory(report)
 
 enable_testing()
 add_subdirectory(classtest)
 add_subdirectory(studenttest)
+
+# Comment out this line if you're Patrick testing his implementation 
+# (not provided) versus the testcases.
+#add_subdirectory(sample)
+

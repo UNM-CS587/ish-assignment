@@ -1,5 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/U3fB7APX)
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=17984862)
 # CS587 - Advanced Operating Systems Project 1: The `ish` shell
 
 ## Due Date
@@ -28,7 +26,8 @@ For this assignment, you will:
      and code to receive credit.
   2. Turn in a written report describing the high-level approach that your 
      source code uses to providing the key features you implemented (as a LaTeX
-     document in the turned-in github repository).
+     document in the turned-in github repository - source code in report/report.tex,
+     which the build system will compile into report.pdf).
   3. Take an in-class, closed-book test on how your shell implements these key 
      features.
 *Your final grade on this assignment will be the minimum of your grade on 

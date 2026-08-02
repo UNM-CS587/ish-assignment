@@ -25,7 +25,9 @@ namespace ish {
  * (3) We don't parse pipelines
  * (4) We only parse up to a newline, not to end of input. The higher-level code
  *     invoking the parser has to handle end of input
- * (5) We handle background commands
+ * (5) The command struture can indicate whether a command is in the background,
+ *     but the parser does not currently identify background versus foreground 
+ *     commands.
  * 
  * Another reference I used when building this parser are the slides of an X3
  * tutorial workshop found here: 
