@@ -6,10 +6,12 @@ general Unix command shell.
 
 This repository includes testing infrastructure 
 (in the class-tests and tests directories) which you should use to verify
-the correectness of any added code. DO NOT CHANGE THE TESTS in the classtest
-directory or the .github/workflow/classtests.yml file or the student will
-get in serious trouble! You may change the files in the studenttest directory
-and the .github/workflow/studenttests.yml file.
+the correectness of any added code. Unless you are working with the class
+instructor (Patrick Bridges), do not change the tests in the classtest
+directory or the .github/workflow/classtests.yml file. Student who change
+the class-provided test cases may get in serious trouble. Students may and
+should change the files in the studenttest directory and the potentially
+the .github/workflow/studenttests.yml file.
 
 When generating, editing, designing, or critiquing code or when working with 
 git, follow all of the the guidelines in the CODING.md file. 

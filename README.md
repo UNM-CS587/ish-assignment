@@ -12,8 +12,7 @@ you also have to convince your boss (the class instructor) that:
   2. The completed program actually solves the problem generally instead of
      regurgitating answers to the provided test cases
 The features you must implement and demonstrate understanding of for full
-credit do not include pipelines or job control; however, you may implement,
-test, and demonstrate understanding of these features for extra credit.
+credit.
 
 For this assignment, you will:
   1. Turn in a github repository that includes all of your source code, test
@@ -37,21 +36,19 @@ demonstrated understanding will receive no credit!*
 ## Required Program Features
 
 Your shell *must* use the C++ parser parser provided in the src/ directory and 
-implement a subset of the features described in the included ISH manual page 
-(ish.man.pdf). Notably, you do *not* need to implement job control or pipelines,
-though you may implement job control and piplines, along with test cases that 
-demonstrate their correctness for up to 25% extra credit (10% for job control,
-15% for pipelines).
+implement the features described in the included ISH manual page (ish.man.pdf). 
+Note that the parser does not yet parse job control or pipelines, but for full 
+credit on the assignment you will need to extend it to do so.
 
 The basic features you are required to implement for full credit are:
-  * Basic command execution
+  * Basic command execution - 25%
     * Correct shell prompt as described in the manual page
     * Run command with full command name
     * Run command with full command name and arguments
     * 'cd' builtin works (check with /bin/pwd)
     * `quit` builtin and EOF cause shell to exit properly and cleanly
 
-  * Envirionment and alias handling
+  * Envirionment and alias handling - 20%
     * Environment variables correctly passed to child
     * PATH searching works
     * PATH in wrong syntax handled well
@@ -60,10 +57,14 @@ The basic features you are required to implement for full credit are:
     * Adding an alias works
     * Removing an alias works
 
-  * Miscellaneous
+  * Miscellaneous - 10%
     * .ishrc executed properly
+    * Shell continues execution after ishrc execution
+    * Environment and aliases changed in .ishrc are visible in the interactive shell
+    * The shell should not leak resources, for example file descriptors, process
+      IDs, or memory
 
-  * File redirection
+  * File redirection - 20%
     * Redirect output to a simople file
     * Appending to a file works
     * Redirection of stdout and stderr works
@@ -71,7 +72,23 @@ The basic features you are required to implement for full credit are:
     * Ambiguous redirections are detected and reported
     * Redirection of both input and output works.
 
-  * Error handling
+  * Job control - 10%
+    * Start jobs in the background
+    * Stop running jobs using ^Z
+    * Use 'bg' and 'fg' to continue running jobs in the background 
+      or foreground, respectively
+    * List the status of running jobs using the 'jobs' builtin
+    * Report the competion of background jobs prior to issuing a 
+      new prompt
+
+  * Pipelines - 5%
+    * Run two-process pipelines that couple the output of the first
+      to the input of the second, with both jobs running simultaneously.
+    * Handle pipelines with arbitrarily many processes (tested up to 10)
+    * Handle pipelines that include error output
+    * Support all job control features on pipelines
+
+  * Error handling - Tested in each of the areas above
     * The shell should fail gracefully and report errors like `csh` does when 
       permissions or something else goes wrong doing thie things described 
       above.
@@ -109,6 +126,8 @@ on an Ubuntu system, make sure you ahve the following packages installed:
   - libboost-all-dev 
   - shelltestrunner 
   - libgtest-dev
+  - texlive-latex-base
+  - latexmk
 
 You must use the `fork` and `execve` C system calls to start new processes 
 and the `dup` or `dup2` command to handle file redirection. You may *not* use 
