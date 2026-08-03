@@ -58,7 +58,7 @@ jobs:
         setup-command: ''
         command: ctest -R EnvironmentTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 10
+        max-score: 20
     - name: Redirection Tests
       id: redirection-tests
       uses: classroom-resources/autograding-command-grader@v1
@@ -94,7 +94,7 @@ jobs:
         setup-command: ''
         command: ctest -R JobControlTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 5
+        max-score: 10
     - name: Pipeline Tests
       id: pipeline-tests
       uses: classroom-resources/autograding-command-grader@v1
@@ -103,7 +103,7 @@ jobs:
         setup-command: ''
         command: ctest -R PipelineTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 5
+        max-score: 10
     - name: Autograding Reporter
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
