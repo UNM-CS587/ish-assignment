@@ -1,6 +1,6 @@
 /* 
  * Header-only Boost Spirit X3 parser for the CS587 ISH project
- * Author: Patrick Bridges <pat
+ * Author: Patrick Bridges <patrickb@unm.edu>
  */
 
 #pragma once
