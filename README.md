@@ -1,8 +1,8 @@
 # CS587 - Advanced Operating Systems Project 1: The `ish` shell
 
 ## Due Date
-  * Code and Report Due Date: Sunday, September 6, 2026, 11:59pm
-  * In-class Code Test: Monday, September 7, 2026, 9:00am
+  * Code and Report Due Date: Friday, September 10, 2026, 11:59pm
+  * In-class Code Test: Monday, September 14, 2026, 9:00am
 
 ## Assignment Overview
 Your task is to design and implement a basic UNIX command shell in a provided
@@ -34,7 +34,7 @@ For this assignment, you will:
 
 *Your final grade on this assignment will be the minimum of your grade on 
 these three components.  Correct code that passes all test cases without
-demonstrated understanding will receive no credit!*
+demonstrated student understanding will receive no credit!*
 
 ## Required Program Features
 

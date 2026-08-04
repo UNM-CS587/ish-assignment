@@ -5,7 +5,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 
-\title{CS 587 Project 1: The \texttt{ish} Shell}
+\title{CS 587 Project 1: AI Coding of the \texttt{ish} Shell}
 \author{TODO: Your Name}
 \date{\today}
 
@@ -13,19 +13,19 @@
 
 \maketitle
 
-% This report explains how your shell works and why you built it that
-% way. Write it for a reader who knows operating systems but has not
-% read your code -- the professor grading this after your in-class
-% test. State what you did and how you verified it; do not narrate
-% your development process.
+% This report explains how your shell uses the UNIX system call interface
+% implement basic command shell features, as well as your experiences
+% using AI tools and models to develop your shell. State what you did and 
+% how you verified it; do not narrate your development process.
 
 \section{Overview}
-% One or two paragraphs. What does your shell do, and what is the
+% One or two paragraphs. What is the high-level structure of your shell
+% in terms of modules, parsing does your shell do, and what is the
 % scope of this report? Name which required features you implemented
 % and whether you attempted the pipeline or job control extra credit.
 
 \section{Process Creation and Command Execution}
-% How does your shell parse a command line into a command and turn it
+% How does your shell execute a parsed command line and turn it
 % into a running process? Cover:
 %   - The fork/execve sequence and how the parent and child diverge
 %   - How you search PATH for the executable, and what happens when
@@ -53,14 +53,17 @@
 % permission errors, bad redirections, etc.)? What does it model its
 % error messages on?
 
-\section{Extra Credit: Job Control}
-% Delete this section if you did not implement job control. Otherwise,
-% describe the & separator, ^Z handling, and the bg/fg/jobs builtins.
+\section{Job Control}
+% Once the parser was changed, how did you handle:
+% 1. creation of and waiting for % background jobs
+% 2. detecting when ^Z was pressed at the terminal
+% 3. Report status changesf background jobs, 
+% 4. The bg/fg/jobs builtins.
 
-\section{Extra Credit: Pipelines}
-% Delete this section if you did not implement pipelines. Otherwise,
-% describe how you extended the parser and how pipe(), fork(), and
-% dup2() connect the stages.
+\section{Pipelines}
+% Describe how the parser changed to represent pipelines, how
+% you used the pipe(), fork(), and dup2() system calls, and how '
+% the shell handled job control of entire pipelines.
 
 \section{Testing}
 % What test cases did you add beyond the provided classtests, and what
@@ -68,16 +71,15 @@
 % not covered by the provided tests?
 
 \section{Use of AI Coding Tools}
-% How did you use AI tools during development? What did you prompt
-% for, what did you write or fix yourself, what models and how may 
-% tokens did you use, and how did you verify the % AI-generated code 
-% was correct?
+% How did you use AI tools during development? In general, how did you 
+% prompt, what did you write or fix yourself, what models and how may 
+% tokens did you use, were token limits or model performance an issue,
+% and how easy was the AI-generated code to understand?
 
 \section{Conclusions}
-% Summary of your experiences with the assignment, including what
+% Summarize of your experiences with the assignment, including what
 % you learned about the UNIX system interface, using AI tools for
 % coding, the AI software engineering workflow, and anything else
 % you want to discuss.
-% 
 
 \end{document}
