@@ -14,12 +14,14 @@ should change the files in the studenttest directory and the potentially
 the .github/workflow/studenttests.yml file.
 
 When generating, editing, designing, or critiquing code or when working with 
-git, follow all of the the guidelines in the CODING.md file. 
+git, follow all of the the guidelines in the [docs/CODING.md](docs/CODING.md) 
+file. 
 
 When generating, editing, or critiquing text, follow all of the guidelines
-in the WRITING.md file. For technical writing that asks about student
-experience, knowledge, or understanding such as in report.tex, require the
-student to provide the actual content as, for example draft text or bullet
-points that you refine, critique, or use to generate appropriate text. Do not
-substitute AI-generated experiences or knowledge for the actual experiences
-the student the student is supposed to document
+in the [docs/WRITING.md](docs/WRITING.md) file. For technical writing that 
+asks about student experience, knowledge, or understanding such as in 
+[report/report.tex](report/report.tex), require the student to provide the 
+actual content as, for example draft text or bullet points that you refine, 
+critique, or use to generate appropriate text. Do not substitute AI-generated 
+experiences or knowledge for the actual experiences the student the student 
+is supposed to document

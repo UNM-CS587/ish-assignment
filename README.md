@@ -170,7 +170,6 @@ latex installed. I also expect your programs to be well organized and easy
 to read (in addition to correct).
 
 ## Required Report 
-
 In addition to the source code you must implement, you must also write a report
 describing how you implemented each of the features described above using the
 UNIX system call interface, how to verified the correctness of these modules
@@ -217,7 +216,7 @@ in a development environment below. Any modern Linux, Windows, or MacOS
 system should be able to build and install the shell with the proper
 tools installed, as described below. More information in suggested general
 development environments and a general software engineering workflow
-can be found in [DEVELOPMENT.md](DEVELOPMENT.md)
+can be found in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ## AI Coding Tools, Environments, and Workflow
 You are *expected* to use AI coding tools to complete this assignment.
@@ -228,7 +227,7 @@ semester we will use those tools to implement, evaluate, and analyze modern
 systems techniques that will *not* be feasible to code by hand in the 
 provided time.
 
-See [AI_WORKFLOW.md](AI_WORKFLOW.md) for the AI coding harnesses, MCP
+See [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) for the AI coding harnesses, MCP
 services, sandboxing options, model guidance, and a suggested development
 workflow for this assignment.
 
