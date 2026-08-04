@@ -26,10 +26,12 @@ For this assignment, you will:
      and code, and demonstrate that you understand the code to receive credit.
   2. Turn in a written report describing the high-level approach that your 
      source code uses to provide the key features you implemented (as a LaTeX
-     document in the turned-in GitHub repository - source code in report/report.tex,
-     which the build system will compile into report.pdf).
+     document in the turned-in GitHub repository - source code in 
+     [report/report.tex](report/report.tex), which the build system will 
+     compile into report.pdf).
   3. Take an in-class, closed-book test on how your shell implements these key
      features.
+
 *Your final grade on this assignment will be the minimum of your grade on 
 these three components.  Correct code that passes all test cases without
 demonstrated understanding will receive no credit!*
@@ -126,20 +128,6 @@ input/output matching).
     * Support all job control features - backgrounding, `jobs`, ^Z/`bg`/`fg`
       - on a pipeline as a single job
 
-One requirement isn't checked by an automated test in classtest/ and is
-assessed by hand or at the in-class test instead: the shell should not leak
-memory over a session. `resource-leak.sh` catches leaked file descriptors
-and zombie processes (both are directly observable from outside the
-process), but a memory leak needs a tool like valgrind to detect reliably,
-which isn't part of this project's toolchain.
-
-The point breakdown above is drawn directly from `classtest/CMakeLists.txt`
-and `.github/workflows/classtests.yml`; results appear as a GitHub Actions
-check on every pull request into `main`. Job control and pipeline error
-handling is graded within the Job Control Tests and Pipeline Tests
-categories above; only basic execution and redirection have dedicated
-error categories.
-
 If you are in doubt about the functionality of `ish` or how it should behave in
 a particular situation, model the behavior on that of `csh`.  If you have 
 specific questions about the project, ask in the class Discord.
@@ -178,6 +166,45 @@ In terms of the system interfaces and libraries you may and may not use:
      libraries, including any Boost libraries you use besides the Boost
      Spirit X3 Parser already used.
 
+## Required Report 
+
+In addition to the source code you must implement, you must also write a report
+describing how you implemented each of the features described above using the
+UNIX system call interface, how to verified the correctness of these modules
+so that they don't just pass the functional tests but actually implement the 
+feature generally, and your experience using AI tools to implement these 
+features. You may use AI tools to assist you in editing and revising this 
+report, but *you should provide the draft text, bullet points, or other 
+content* that the AIs help you revise decribing your code and how it works.
+A suggested outline for this report is included in 
+[report/report.tex](report/report.tex).
+
+## Provided Software Testing
+
+Testcases that test correctness of the shell output and of key shell components
+are included in the provided repository. Specifically:
+  - Class grading tests on which your shell is graded are specified in the 
+    classtest/ directory and are run by the github workflow described in 
+    .github/workflows/classtests.yml; these tests are purely funcational and 
+    work by executing the shell on commit to the main branch. *Do not change 
+    classtests.yml or any of the tests in the classtest/ directory. Changing
+    class testing infrastructure to increase your grade will be handled as
+    academic dishonesty.*
+  - Infrastructure for student tests which are run on commit to the main and 
+    develop branch is provided in the studenttest/ directory and are directed
+    by the workflow specified in .github/workflows/studenttests.yml. I have
+    provided Google Test test cases for the C++ parser already and encourage
+    you to add your own tests to run as you develop your shell. 
+
+## Assignment download and submission
+
+You will fork the main assignment repository provided by the class instructor
+for the class *in the class GitHub organization*. The class instructor will 
+then snapshot and grade your repository at the due time. Only your `main`
+GitHub branch will be graded. You must ensure that your completed work is on
+this branch!  Be sure to commit and push all of your changes to the `main`
+branch on your repository prior to the due date!
+
 ## Computer Development Environments
 
 You should ensure that you have a high-quality environment for authoring, 
@@ -185,88 +212,9 @@ compiling, and running your program. You may use the development environment
 of your choice to do so, though I provide some advice on what to look for
 in a development environment below. Any modern Linux, Windows, or MacOS 
 system should be able to build and install the shell with the proper
-tools installed, as described below.
-
-### Code Authoring Tools
-You may use any IDE or programming environment with which you are comfortable
-and productive to write your program. This includes, but is not limited to,
-VSCode and its extensions, JetBrains CLion, Emacs, or a more traditional 
-command line interfaces with editors such as VIM. 
-
-As general advice for choosing an IDE: *pick one you like and learn to use
-it well.* Personally, my goal is to minimize the amount of time my fingers 
-leave the keyboard, as the keyboard is, for most activities, a much
-higher-bandwidth input device than a mouse. That means you really want to
-learn the keyboard shortcuts in your chosen IDE.
-
-### Compilation Environments
-
-You should be able to compile this code on any system that supports UNIX
-development, including modern Windows, Macintosh, and Linux systems. You
-will need to install a modern C++ compiler, the Boost C++ libraries, 
-Google Test, and a LaTeX environment on these systems.
-
-### Linux
-The pre-provided test environment uses an Ubuntu container on github for 
-testing, and the code should compile and run with ease on Ubuntu and related
-systems.  To compile on an Ubuntu system, make sure you have the following 
-packages installed:
-  - build-essential
-  - cmake
-  - libboost-all-dev 
-  - shelltestrunner 
-  - libgtest-dev
-  - texlive-latex-base
-  - texlive-latex-extras
-  - latexmk
-Compiling on a RedHat system will require installing similar packages using the
-RedHat tools.
-
-### Windows
-On Windows systems, you can use Windows Subsystem for Linux 2 (WSL2) to run 
-a Linux kernel and development environment on a Windows system. I suggest 
-running Ubuntu using WSL2; if you do so you can follow the advice above on
-needed packages.
-
-### MacOS 
-To compile on a MacOS system, I suggest you use use homebrew (https://brew.sh) 
-to install UNIX development packages. You can also use homebrew on Linux or 
-WSL2. If using homebrew, you'll want the following packages:
-  - boost
-  - shelltestrunner
-  - texlive
-  - googletest
-
-## GitHub Software Engineering Workflow
-
-Use a three-tier branching model: `main`, `develop`, and short-lived feature
-branches cut from `develop`.
-  * `main` holds only released, working code. The class instructor grades
-    this branch, so nothing incomplete or broken belongs here.
-  * `develop` is the integration branch. Merge each finished feature into
-    `develop` through a pull request once its tests pass.
-  * Feature branches (e.g. `feature/pipeline-parsing`, `feature/job-control`)
-    hold the work for one feature at a time. Branch from `develop`, add the
-    code and test cases for that feature together, and open a pull request
-    back into `develop` when it's ready.
-
-This is a simplified version of the branching model Vincent Driessen
-described in "A successful Git branching model" (nvie.com, 2010); GitHub's
-own "GitHub flow" guide (docs.github.com) documents a lighter-weight
-alternative if you'd rather skip the `develop` branch on a project this
-size.
-
-Protect `main` and `develop` in the repository settings so that:
-  * Commits cannot be pushed to them directly; all changes arrive through a
-    pull request.
-  * The GitHub Actions workflows (`.github/workflows/classtests.yml` on
-    `main`, `.github/workflows/studenttests.yml` on `develop` and `main`)
-    must pass before a pull request can merge.
-
-This gives you the same safety net you'll rely on in later, larger
-projects: broken code never lands on the branch that's graded or the
-branch your teammates build on, and every merge has a passing test run to
-point to.
+tools installed, as described below. More information in suggested general
+development environments and a general software engineering workflow
+can be found in [DEVELOPMENT.md](DEVELOPMENT.md)
 
 ## AI Coding Tools, Environments, and Workflow
 You are *expected* to use AI coding tools to complete this assignment.
@@ -278,36 +226,8 @@ systems techniques that will *not* be feasible to code by hand in the
 provided time.
 
 See [AI_WORKFLOW.md](AI_WORKFLOW.md) for the AI coding harnesses, MCP
-services, sandboxing options, model guidance, and recommended development
+services, sandboxing options, model guidance, and a suggested development
 workflow for this assignment.
-
-## Testing
-
-Testcases that test correctness of the shell output and of key shell components
-are included in the provided repository. Specifically:
-  - Class grading tests on which your shell is graded are specified in the 
-    classtest/ directory and are run by the github workflow described in 
-    .github/workflows/classtests.yml; these tests are purely operational and 
-    work by executing the shell on commit to the main branch. *Do not change 
-    classtests.yml or any of the tests in the classtest/ directory. Changing
-    class testing infrastructure to increase your grade will be handled as
-    academic dishonesty.*
-  - Infrastructure for student tests which are run on commit to the main and 
-    develop branch is provided in the studenttest/ directory and are directed
-    by the workflow specified in .github/workflows/studenttests.yml. I have
-    provided Google Test test cases for the C++ parser already and encourage
-    you to add your own tests to run as you develop your shell. Unless you
-    are doing extra credit parts of the assignment, these tests will not
-    impact your grade.
-
-## Assignment download and submission
-
-You will fork the main assignment repository provided by the class instructor
-for the class *in the class GitHub organization*. The class instructor will 
-then snapshot and grade your repository at the due time. Only your `main`
-GitHub branch will be graded. You must ensure that your completed work is on
-this branch!  Be sure to commit and push all of your changes to the `main`
-branch on your repository prior to the due date!
 
 ## Supporting and Reference Materials
 
@@ -334,7 +254,8 @@ A few final bits of advice:
   1. Second, once you have a good understanding of what you are being asked to 
      do, work _one feature at a time in a separate feature branch of `develop`_
      in collaboration with the provided AI models to design, create test cases 
-     for, implement, and document (in report.tex) those features.
+     for, implement, and document (in [report/report.tex](report/report.tex)) 
+     those features.
   1. Use pull requests to merge individual features to the develop branch as 
      they are completed, paying attention to previous test cases to make sure 
      they don't break as you develop new features. Note that by default, the 
