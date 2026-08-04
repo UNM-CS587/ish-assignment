@@ -41,6 +41,15 @@ ones you might want to consider:
      block direct WebSearch tool calls. I use FireCrawl as my MCP web
      search interface; you can use whichever you prefer.
 
+### AI Agent Skills
+
+Most AI agent harnesses have the ability to include _skills_ for the AI agent
+which provide the AI specific instructions on how to do different things well.
+If you want to try this out, there are a wide range of them in the Claude and 
+Codex skill marketplaces. [https://github.com/obra/superpowers](_Superpowers_)
+is one of the more popular sets of complex skills for medium scale software 
+engineering systems.
+
 ## AI Agent Sandboxing
 
 AI agents may run shell commands and compile and execute your code on your 
