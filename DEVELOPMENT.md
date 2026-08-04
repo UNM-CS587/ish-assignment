@@ -73,7 +73,9 @@ branches cut from `develop`.
 
 This is a simplified version of the branching model Vincent Driessen
 described in "A successful Git branching model" (nvie.com, 2010).
-Protect `main` and `develop` in the repository settings so that:
+
+To support this, the `main` and `develop` branches in the provided GitHub
+repository are protected so that:
   * Commits cannot be pushed to them directly; all changes arrive through a
     pull request.
   * The GitHub Actions workflows (`.github/workflows/classtests.yml` on
@@ -83,3 +85,12 @@ This gives you the same safety net you'll rely on in later, larger
 projects: broken code never lands on the branch that's graded or the
 branch your teammates build on, and every merge has a passing test run to
 point to.
+
+This setup also allows for a software repository to have multiple programmers 
+working on different feature branches at the same time, with pull requests and 
+conflicts from these feature branches handled when merging to the `develop` branch. 
+You could _in theory_ leverage this by having different AI agent instances work 
+in different feature branches at the same time. However, this requires careful 
+software planning to keep those feature branches mostly independent and can 
+result in complex conflicts when merging feature branches into `develop`. As 
+a result, I suggest that you do *not* do this for this project.

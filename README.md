@@ -132,19 +132,17 @@ If you are in doubt about the functionality of `ish` or how it should behave in
 a particular situation, model the behavior on that of `csh`.  If you have 
 specific questions about the project, ask in the class Discord.
 
-## Starter Source Code and Programming Assignment Restrictions 
+## Program Requirements, Restrictions, Starter Source Code
 
-Your shell should be written in C++, compile using cmake, and produce an 
-executable named `ish`. I have provided a C++ parser for `ish` in this 
-assignment in the src/ directory. However, the C++ starter code does *not* 
-yet parse background jobs or pipelines. To complete that portion of the 
+Your shell will be written in C++, compile using cmake, and produce an 
+executable named `ish`. I have provided you this GitHub repository with the
+basic compilation and software engineering infrastructure, most of 
+a C++ parser for the assignment ([src/](src/) directory, functional testcases 
+which will be used to grade the correctness of your program, and unit tests
+for the parser. Note, however, the provided C++ starter code does *not* 
+parse background jobs or pipelines; to complete that portion of the 
 assignment, you will need to (with AI help) add support for parsing job
-control and pipelines to the provided C++ parser.
-
-Your code must be "clean" -- it must compile without warnings or 
-unresolved references on a standard UNIX system with the Boost C++ libraries and
-latex installed. I also expect your programs to be well organized and easy 
-to read (in addition to correct).
+control and pipelines to the provided parser.
 
 In terms of the system interfaces and libraries you may and may not use:
   1. You may use general data structures abstractions to help you store, 
@@ -166,6 +164,11 @@ In terms of the system interfaces and libraries you may and may not use:
      libraries, including any Boost libraries you use besides the Boost
      Spirit X3 Parser already used.
 
+Your code must be "clean" -- it must compile without warnings or 
+unresolved references on a standard UNIX system with the Boost C++ libraries and
+latex installed. I also expect your programs to be well organized and easy 
+to read (in addition to correct).
+
 ## Required Report 
 
 In addition to the source code you must implement, you must also write a report
@@ -179,7 +182,7 @@ content* that the AIs help you revise decribing your code and how it works.
 A suggested outline for this report is included in 
 [report/report.tex](report/report.tex).
 
-## Provided Software Testing
+## Provided Software Testing Features
 
 Testcases that test correctness of the shell output and of key shell components
 are included in the provided repository. Specifically:
