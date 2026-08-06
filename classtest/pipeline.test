@@ -1,0 +1,66 @@
+# Pipeline Tests
+#
+# These exercise the |, |&, and pipeline-plus-job-control features described
+# in ish.man.pdf. The data-flow checks use exact matching since cat's output
+# is fully predictable; the backgrounded-pipeline checks use shelltest's
+# regexp mode (a bare `/pattern/` after `>`, which searches for the pattern
+# anywhere in the actual output) since job numbers and process IDs can't be
+# predicted. See job-control.test for why exact wording of job status
+# messages isn't checked.
+#
+# A pipeline-plus-SIGTSTP test lives in pipeline-signals.sh instead, since
+# shelltest can't deliver a real stop signal (see job-control.test).
+
+# Test that a two-stage pipeline connects the first command's stdout to the
+# second command's stdin
+<
+/bin/cat redirectin.txt | /bin/cat
+$ SHELL
+>
+PROMPT Contents of the file redirectin
+PROMPT exit
+
+# Test a pipeline with many stages (the assignment README calls for support
+# up to 10 processes)
+<
+/bin/echo relay | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat | /bin/cat
+$ SHELL
+>
+PROMPT relay
+PROMPT exit
+
+# Test that a plain | pipeline connects only the first command's stdout to
+# the next command's stdin; its stderr still goes to the terminal
+<
+/bin/chmod 700 ./pipesplit.sh
+./pipesplit.sh | /bin/cat
+$ SHELL
+>
+PROMPT PROMPT stdout-line
+PROMPT exit
+>2
+stderr-line
+
+# Test that |& connects both the first command's stdout and stderr into the
+# pipeline
+<
+./pipesplit.sh |& /bin/cat
+$ SHELL
+>
+PROMPT stdout-line
+stderr-line
+PROMPT exit
+
+# Test that backgrounding a pipeline reports the job number and the process
+# ID of every stage, not just one
+<
+/bin/sleep 1 | /bin/cat &
+$ SHELL
+> /\[1\] [0-9]+ [0-9]+/
+
+# Test that jobs lists a backgrounded pipeline as a single job
+<
+/bin/sleep 2 | /bin/cat &
+jobs
+$ SHELL
+> /\[1\].*sleep/

@@ -1,7 +1,11 @@
 name: Autograding Tests
 'on':
-- push
-- repository_dispatch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      -main
 permissions:
   checks: write
   actions: read
@@ -12,9 +16,9 @@ jobs:
     if: github.actor != 'github-classroom[bot]'
     steps:
     - name: Install packages
-      run: sudo apt-get update && sudo apt-get install -y libboost-all-dev flex bison libfl2 libfl-dev shelltestrunner
+      run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libboost-all-dev shelltestrunner libgtest-dev texlive-latex-base texlive-latex-extra latexmk
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     - name: Build
@@ -27,7 +31,7 @@ jobs:
         setup-command: ''
         command: ctest -R BasicTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 30
+        max-score: 15
     - name: Basic Errors
       id: basic-errors
       uses: classroom-resources/autograding-command-grader@v1
@@ -45,7 +49,7 @@ jobs:
         setup-command: ''
         command: ctest -R BuiltinTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 15
+        max-score: 10
     - name: Environment Tests
       id: environment-tests
       uses: classroom-resources/autograding-command-grader@v1
@@ -54,7 +58,7 @@ jobs:
         setup-command: ''
         command: ctest -R EnvironmentTests --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 15
+        max-score: 20
     - name: Redirection Tests
       id: redirection-tests
       uses: classroom-resources/autograding-command-grader@v1
@@ -72,7 +76,7 @@ jobs:
         setup-command: ''
         command: ctest -R RedirectionErrors --test-dir ${{github.workspace}}/build
         timeout: 10
-        max-score: 10
+        max-score: 5
     - name: Corner Tests
       id: corner-tests
       uses: classroom-resources/autograding-command-grader@v1
@@ -80,6 +84,24 @@ jobs:
         test-name: Corner Tests
         setup-command: ''
         command: ctest -R CornerTests --test-dir ${{github.workspace}}/build
+        timeout: 10
+        max-score: 10
+    - name: Job Control Tests
+      id: job-control-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Job Control Tests
+        setup-command: ''
+        command: ctest -R JobControlTests --test-dir ${{github.workspace}}/build
+        timeout: 10
+        max-score: 10
+    - name: Pipeline Tests
+      id: pipeline-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pipeline Tests
+        setup-command: ''
+        command: ctest -R PipelineTests --test-dir ${{github.workspace}}/build
         timeout: 10
         max-score: 10
     - name: Autograding Reporter
@@ -91,6 +113,8 @@ jobs:
         ENVIRONMENT-TESTS_RESULTS: "${{steps.environment-tests.outputs.result}}"
         REDIRECTION-TESTS_RESULTS: "${{steps.redirection-tests.outputs.result}}"
         REDIRECTION-ERRORS_RESULTS: "${{steps.redirection-errors.outputs.result}}"
+        JOB-CONTROL-TESTS_RESULTS: "${{steps.job-control-tests.outputs.result}}"
+        PIPELINE-TESTS_RESULTS: "${{steps.pipeline-tests.outputs.result}}"
         CORNER-TESTS_RESULTS: "${{steps.corner-tests.outputs.result}}"
       with:
-        runners: basic-tests,basic-errors,builtin-tests,environment-tests,redirection-tests,redirection-errors,corner-tests
+        runners: basic-tests,basic-errors,builtin-tests,environment-tests,redirection-tests,redirection-errors,corner-tests,job-control-tests,pipeline-tests

@@ -14,7 +14,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.70.0)
 
 if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
+    include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
     add_executable(ish ${SOURCE_FILES})
     target_link_libraries(ish ${Boost_LIBRARIES})
 endif()
