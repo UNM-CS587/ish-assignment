@@ -33,11 +33,12 @@ $ SHELL
 PROMPT PROMPT FOO!
 PROMPT exit
 
-# Test that printing aliases works
+# Test that printing aliases works. csh separates the alias name from its
+# value with a tab, and README.md tells you to model ish on csh.
 <
 alias foo /bin/echo; alias
 $ SHELL
-PROMPT foo=/bin/echo
+PROMPT foo	/bin/echo
 PROMPT exit
 
 # Test that unaliasing works
@@ -51,7 +52,7 @@ $ SHELL
 PROMPT PROMPT FOO!
 PROMPT PROMPT PROMPT PROMPT exit
 >2
-foo: No such file or directory
+foo: Command not found.
 
 # Test that quit works
 <

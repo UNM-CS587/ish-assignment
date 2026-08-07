@@ -21,3 +21,14 @@ $ ./ish-with-ishrc.sh SHELL
 Out of ISHRC
 PROMPT In shell
 PROMPT exit
+
+# Test that environment variables and aliases set in .ishrc are visible in
+# the interactive shell after startup completes
+<
+/usr/bin/printenv
+greet hello from alias
+$ ./ish-with-ishrc.sh SHELL
+Out of ISHRC
+PROMPT ISHRCVAR=from_ishrc
+PROMPT hello from alias
+PROMPT exit

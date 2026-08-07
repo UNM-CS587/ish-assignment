@@ -1,0 +1,45 @@
+name: Student Tests
+'on':
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-student-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install packages
+      run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libboost-all-dev shelltestrunner libgtest-dev texlive-latex-base texlive-latex-extra latexmk
+    - name: Checkout code
+      uses: actions/checkout@v7
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build 
+    # Run every test you register with add_test() in studenttest/, not just the
+    # provided parser_test binary.
+    - name: Student Tests
+      run: ctest --test-dir ${{github.workspace}}/build -R StudentTests --output-junit student-test-results.xml
+      # On a push we want the report below to be what fails the run, so it can
+      # say which test broke. On a pull request from a fork the report can't be
+      # published at all, so a failing ctest has to fail the job right here.
+      continue-on-error: ${{ github.event_name == 'push' }}
+    # dorny/test-reporter needs `checks: write`, and GITHUB_TOKEN is read-only
+    # for pull_request runs originating from a fork. Publishing there would 403
+    # and, with fail-on-error, put a red X on every student pull request.
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v3
+      if: always() && github.event_name == 'push'
+      with:
+        name: 'Student Test Results'
+        path: 'build/student-test-results.xml'
+        reporter: 'java-junit' # GoogleTest XML naturally matches the JUnit schema
+        fail-on-error: 'true'  # Safely fails the workflow run if any tests actually failed

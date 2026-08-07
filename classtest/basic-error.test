@@ -11,4 +11,4 @@ PROMPT PROMPT exit
 /bin/chmod 000 ./testscript.sh; ./testscript.sh; /bin/chmod 700 ./testscript.sh
 $ SHELL
 PROMPT PROMPT exit
->2 /(No such file or directory)|(Permission denied)/
+>2 /Permission denied/

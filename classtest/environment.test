@@ -39,3 +39,25 @@ $ SHELL
 PROMPT PROMPT PATH=/bin:/usr/bin
 PROMPT path search check
 PROMPT exit
+
+# Test that a PATH containing a nonexistent directory is handled gracefully;
+# the search skips the bad entry and finds the command in a later one
+<
+setenv PATH /does/not/exist:/bin
+echo path skips missing dir
+$ SHELL
+PROMPT PROMPT path skips missing dir
+PROMPT exit
+
+# Test that setting PATH to empty (setenv PATH with no value) is handled
+# gracefully: a bare command name is reported as not found instead of
+# crashing, while the same command still runs when given by full path
+<
+setenv PATH
+echo bare name should not be found
+/bin/echo full path still works
+$ SHELL
+PROMPT PROMPT PROMPT full path still works
+PROMPT exit
+>2
+echo: Command not found.

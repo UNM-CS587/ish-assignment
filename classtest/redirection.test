@@ -31,14 +31,30 @@ PROMPT PROMPT PROMPT PROMPT rewrite one
 rewrite two
 PROMPT exit
 
-# Test error out. We use regexp to look for the error because
-# of the changingerror messages on different systems from touch
+# Test that >& captures a command's stderr. We use regexp to look for the
+# error because of the changing error messages on different systems from
+# touch. run-shelltest.sh creates the nowrite directory at mode 500; we don't
+# use /etc, because it is writable for a root default user, where this test
+# would both fail and create /etc/password on the student's system.
 <
 /bin/rm -f redirecterr
-/usr/bin/touch /etc/password >& redirecterr
+/usr/bin/touch nowrite/password >& redirecterr
 /bin/cat redirecterr
 $ SHELL
 > /Permission denied/
+
+# Test that >& captures stdout as well as stderr. pipesplit.sh writes one
+# line to each stream, and both must land in the file; a shell that
+# implements >& as stderr-only redirection fails here.
+<
+/bin/rm -f redirectboth.txt
+./pipesplit.sh >& redirectboth.txt
+/bin/cat redirectboth.txt
+$ SHELL
+>
+PROMPT PROMPT PROMPT stdout-line
+stderr-line
+PROMPT exit
 
 # Test redirect input
 <

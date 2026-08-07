@@ -1,0 +1,63 @@
+# Job Control Tests
+#
+# These exercise the &, jobs, bg, fg, and kill features described in
+# ish.man.pdf. Job numbers and process IDs are assigned by the OS and can't
+# be predicted, and the man page doesn't pin down the exact wording or
+# spacing "jobs" or a completion report should use (only that a background
+# job's start prints "[N] pid..."), so most checks here use shelltest's
+# regexp mode (a bare `/pattern/` after `>`, which searches for the pattern
+# anywhere in the actual output) instead of an exact match.
+#
+# Tests that need a real SIGTSTP (the signal CTRL-Z generates on a real
+# terminal) live in job-control-signals.sh instead: shelltest feeds ish its
+# input from a plain file, not a pseudo-terminal, so a literal ^Z byte in a
+# < block here would never reach a terminal driver and never become a
+# signal.
+
+# Test that starting a job in the background reports its job number and
+# process ID, e.g. "[1] 1234"
+<
+/bin/sleep 1 &
+$ SHELL
+> /\[1\] [0-9]+/
+
+# Test that job numbers increase as more jobs are backgrounded
+<
+/bin/sleep 1 &
+/bin/sleep 1 &
+$ SHELL
+> /\[2\] [0-9]+/
+
+# Test that & returns to the prompt right away instead of waiting for the
+# job to finish. If & blocked, this test would run past its CI timeout.
+<
+/bin/sleep 3 &
+/bin/echo after
+$ SHELL
+> /after/
+
+# Test that jobs lists a running background job by job number and command
+<
+/bin/sleep 2 &
+jobs
+$ SHELL
+> /\[1\].*sleep/
+
+# Test that a finished background job is reported before the next prompt.
+# The foreground sleep gives the background job time to actually finish;
+# unlike the bare "[1] pid" startup message, a completion report naming the
+# command is something the shell has to notice and print on its own.
+<
+/bin/sleep 1 &
+/bin/sleep 2
+$ SHELL
+> /\[1\].*sleep/
+
+# Test that referencing a job number that doesn't exist is reported as an
+# error rather than silently ignored or crashing. %99 is a job number, not a
+# process ID: no job has been started here, so job 99 cannot exist.
+<
+fg %99
+$ SHELL
+PROMPT PROMPT exit
+>2 /99/
