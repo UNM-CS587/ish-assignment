@@ -44,11 +44,14 @@ wait_for() {
   return 0
 }
 
-# Opening a FIFO for writing blocks until a reader opens it, so start ish
-# reading from it first, then open our write end.
+# Opening a FIFO write-only blocks until a reader opens it, which would hang
+# this script forever if ish died before its first read. Opening read-write
+# never blocks, so a dead ish shows up as the explicit check below rather than
+# as a test that never finishes.
 "$ISH" <"$FIFO" >"$LOG" 2>&1 &
 ISH_PID=$!
-exec 3>"$FIFO"
+exec 3<>"$FIFO"
+kill -0 "$ISH_PID" 2>/dev/null || fail "ish exited immediately instead of reading commands"
 
 # Start a job in the background and find its process ID from the "[1] pid"
 # message the man page requires when a job is backgrounded.
@@ -65,7 +68,8 @@ sleep 0.5
 tail -5 "$LOG" | grep -Eiq '\[1\].*stop' \
   || fail "jobs did not report job 1 as stopped after SIGTSTP"
 
-# bg should resume it and jobs should stop calling it stopped.
+# bg should resume it and jobs should stop calling it stopped. %1 is the job
+# number reported in "[1] pid" above, not a process ID.
 send "bg %1"
 sleep 0.5
 send "jobs"

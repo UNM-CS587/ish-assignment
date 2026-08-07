@@ -13,8 +13,6 @@ std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
     {
         out << "\t" << arg << "\n";
     }
-    std::string path;
-    bool err, append;
     out << "  redirections:\n";
     for (auto redir: cmd.getRedirections()) {
         switch(redir.type) {

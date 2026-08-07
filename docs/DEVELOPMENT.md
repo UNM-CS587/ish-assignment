@@ -1,4 +1,3 @@
-
 # Computer Development Environments
 
 You should ensure that you have a high-quality environment for authoring, 
@@ -38,7 +37,7 @@ packages installed:
   - shelltestrunner 
   - libgtest-dev
   - texlive-latex-base
-  - texlive-latex-extras
+  - texlive-latex-extra
   - latexmk
 Compiling on a RedHat system will require installing similar packages using the
 RedHat tools.
@@ -50,9 +49,10 @@ running Ubuntu using WSL2; if you do so you can follow the advice above on
 needed packages.
 
 ### MacOS 
-To compile on a MacOS system, I suggest you use use homebrew (https://brew.sh) 
+To compile on a MacOS system, I suggest you use homebrew (https://brew.sh) 
 to install UNIX development packages. You can also use homebrew on Linux or 
 WSL2. If using homebrew, you'll want the following packages:
+  - cmake
   - boost
   - shelltestrunner
   - texlive
@@ -74,17 +74,24 @@ branches cut from `develop`.
 This is a simplified version of the branching model Vincent Driessen
 described in "A successful Git branching model" (nvie.com, 2010).
 
-To support this, the `main` and `develop` branches in the provided GitHub
+To support this, the `main` and `develop` branches in the instructor's
 repository are protected so that:
   * Commits cannot be pushed to them directly; all changes arrive through a
     pull request.
-  * The GitHub Actions workflows (`.github/workflows/classtests.yml` on
-    `main`, `.github/workflows/studenttests.yml` on `develop` and `main`)
+  * The GitHub Actions workflows (`.github/workflows/classtests.yml` and
+    `.github/workflows/studenttests.yml`, both on `main` and `develop`)
     must pass before a pull request can merge.
-This gives you the same safety net you'll rely on in later, larger
-projects: broken code never lands on the branch that's graded or the
-branch your teammates build on, and every merge has a passing test run to
-point to.
+
+Branch protection lives in the repository's settings rather than in its
+files, so **your fork does not inherit any of it.** If you want the same
+safety net on your own repository, recreate it under Settings > Rules >
+Rulesets: target `main` and `develop`, require a pull request before
+merging with zero required approvals (you cannot approve your own), and
+require the `run-autograding-tests` and `run-student-tests` status checks.
+It is worth the five minutes. It is the same safety net you'll rely on in
+later, larger projects: broken code never lands on the branch that's graded
+or the branch your teammates build on, and every merge has a passing test
+run to point to.
 
 This setup also allows for a software repository to have multiple programmers 
 working on different feature branches at the same time, with pull requests and 

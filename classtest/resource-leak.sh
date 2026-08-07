@@ -55,11 +55,14 @@ fd_count() {
   fi
 }
 
-# Opening a FIFO for writing blocks until a reader opens it, so start ish
-# reading from it first, then open our write end.
+# Opening a FIFO write-only blocks until a reader opens it, which would hang
+# this script forever if ish died before its first read. Opening read-write
+# never blocks, so a dead ish shows up as the explicit check below rather than
+# as a test that never finishes.
 "$ISH" <"$FIFO" >"$LOG" 2>&1 &
 ISH_PID=$!
-exec 3>"$FIFO"
+exec 3<>"$FIFO"
+kill -0 "$ISH_PID" 2>/dev/null || fail "ish exited immediately instead of reading commands"
 sleep 0.5
 
 BASELINE_FDS=$(fd_count "$ISH_PID")

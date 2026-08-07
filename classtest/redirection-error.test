@@ -1,9 +1,12 @@
-# Test if output file isn't writeable
+# Test if output file isn't writeable. run-shelltest.sh creates the nowrite
+# directory at mode 500; we don't use / or /etc, because those are writable
+# for a root default user, where this test would both fail and leave a file
+# behind on the student's system.
 <
-/bin/echo permission test > /redirectout.txt
+/bin/echo permission test > nowrite/redirectout.txt
 $ SHELL
 PROMPT PROMPT exit
->2 /\/redirectout.txt: (Permission denied|Read-only file system)/
+>2 /nowrite\/redirectout.txt: Permission denied/
 
 # Test redirect non-existenent input
 <

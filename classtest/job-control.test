@@ -54,7 +54,8 @@ $ SHELL
 > /\[1\].*sleep/
 
 # Test that referencing a job number that doesn't exist is reported as an
-# error rather than silently ignored or crashing
+# error rather than silently ignored or crashing. %99 is a job number, not a
+# process ID: no job has been started here, so job 99 cannot exist.
 <
 fg %99
 $ SHELL

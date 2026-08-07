@@ -1,6 +1,6 @@
 # AI Coding Tools, Environments, and Workflow
 
-This document supports the [`ish` assignment README](README.md). It covers
+This document supports the [`ish` assignment README](../README.md). It covers
 the AI coding harnesses, MCP services, sandboxing options, model guidance,
 and recommended development workflow for the assignment.
 
@@ -37,7 +37,7 @@ ones you might want to consider:
      Use a GitHub personal access token scoped to your repository only here,
      not a broad or account-wide token.
   1. You may also want to set up an MCP web search service, since some
-     agent harnesses and backend models (e.g. the UNM Claude API models)
+     agent harnesses and backend models (the class LLM gateway among them)
      block direct WebSearch tool calls. I use FireCrawl as my MCP web
      search interface; you can use whichever you prefer.
 
@@ -46,7 +46,7 @@ ones you might want to consider:
 Most AI agent harnesses have the ability to include _skills_ for the AI agent
 which provide the AI specific instructions on how to do different things well.
 If you want to try this out, there are a wide range of them in the Claude and 
-Codex skill marketplaces. [https://github.com/obra/superpowers](_Superpowers_)
+Codex skill marketplaces. [_Superpowers_](https://github.com/obra/superpowers)
 is one of the more popular sets of complex skills for medium scale software 
 engineering systems.
 
@@ -80,7 +80,9 @@ Potential sandboxing solutions include:
 
 ## AI Model Availability
 
-TODO(instructor): Add the AI Verde access URL and signup/quota instructions here.
+The class provides an LLM gateway so you do not have to pay for model access
+out of pocket. TODO(instructor): access URL, signup steps, and per-student
+quota go here.
 
 Not every request needs your most capable, most expensive model. Use a
 fast, cheap model for mechanical work (boilerplate test cases, formatting,

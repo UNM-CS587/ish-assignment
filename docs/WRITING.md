@@ -2,8 +2,6 @@
 
 Source material: *The Gospel According to Embree*  (https://www.cs.unm.edu/~bridges/embree-gospel.pdf) and Strunk & White's *The Elements of Style*. Purpose: write like a competent human, not an AI. When in doubt, cut.
 
-# Writing Style Guide
-
 ## Part 1: Strunk & White Principles
 - Omit needless words. A sentence should contain no unnecessary words, a paragraph no unnecessary sentences, for the same reason a drawing should have no unnecessary lines.
 - Use the active voice. It is direct and vigorous; the passive is often timid or evasive.
@@ -97,4 +95,4 @@ Specific habits that make prose read as machine-generated. Actively avoid these.
 - **Keep parallel elements parallel in form.** Inconsistent phrasing structure (mixing gerunds, infinitives, and imperatives in one list) reads as sloppy or synthetic.
 - **Don't shift person, number, tense, voice, or mood** unless the content requires it.
 - **Write with your ear.** Read it back; if it sounds like a template, it is one.
-- **Avoid constrastive structure.** Constructs like "It's not X, it's Y", ""We're not just building a product, we're creating an experience.", or "Credit card fraud isn't just evolving—it's accelerating!" bury the lede, read as stilted and artificial, and should be avoided if at all possible.
+- **Avoid contrastive structure.** Constructs like "It's not X, it's Y", ""We're not just building a product, we're creating an experience.", or "Credit card fraud isn't just evolving—it's accelerating!" bury the lede, read as stilted and artificial, and should be avoided if at all possible.
