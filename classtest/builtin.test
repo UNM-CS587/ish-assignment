@@ -51,7 +51,7 @@ $ SHELL
 PROMPT PROMPT FOO!
 PROMPT PROMPT PROMPT PROMPT exit
 >2
-foo: No such file or directory
+foo: Command not found.
 
 # Test that quit works
 <
