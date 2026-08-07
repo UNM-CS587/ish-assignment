@@ -1,1 +1,3 @@
 /bin/echo Out of ISHRC
+setenv ISHRCVAR from_ishrc
+alias greet /bin/echo

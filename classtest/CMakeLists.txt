@@ -49,10 +49,8 @@ add_test(NAME CornerTests
                            -DHOME=${HOME_DIR} corner.test
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_test(NAME AdditionalTests
-         COMMAND shelltest -DPROMPT=${host_name}%
-                           -DSHELL=$<TARGET_FILE:ish>
-                           -DHOME=${HOME_DIR} additional.test
+add_test(NAME CornerTestsResourceLeak
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/resource-leak.sh $<TARGET_FILE:ish>
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_test(NAME JobControlTests
