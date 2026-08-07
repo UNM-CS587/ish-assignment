@@ -1,7 +1,8 @@
 // Unit tests for the ish command-line parser (src/parser.hpp) against the
 // lexical structure, redirection, and command-list syntax described in
-// ish.man.pdf. Pipelines and job control (the & separator) are extra
-// credit per README.md and are intentionally not covered here.
+// ish.man.pdf. Pipelines and job control (the & separator) are required for
+// full credit per README.md, but the provided grammar does not parse them
+// yet, so they are not covered here.
 
 #include "parser.hpp"
 
@@ -292,10 +293,9 @@ TEST(ParserTokenCharacters, FilenameLikeTokensParse) {
 
 TEST(ParserTokenCharacters, ColonSeparatedPathValueParses) {
     // PATH values are colon-separated (man page, "Environment Variables"),
-    // and README.md requires "PATH searching works." The unmodified
-    // starter grammar's token rule (ishpunct in parser.hpp) does not
-    // include ':', so this currently fails -- add ':' to ishpunct to make
-    // it pass.
+    // and README.md requires "PATH searching works." The token rule's
+    // ishpunct set in parser.hpp already includes ':', so a colon-separated
+    // value parses as one token.
     std::vector<ish::command> commands;
     ASSERT_TRUE(ParseLine("setenv PATH /bin:/usr/bin", commands));
     ASSERT_EQ(commands.size(), 1u);
@@ -304,14 +304,14 @@ TEST(ParserTokenCharacters, ColonSeparatedPathValueParses) {
 }
 
 // ---------------------------------------------------------------------------
-// Features intentionally out of scope for the required parser
+// Features the provided grammar does not parse yet
 // ---------------------------------------------------------------------------
 
-TEST(ParserOutOfScopeFeatures, BareAmpersandDoesNotParseWithoutJobControlSupport) {
-    // & (background execution) is part of the optional job-control extra
-    // credit (README.md). The provided grammar does not recognize it as
-    // written; a student implementing that extra credit will need to
-    // extend the grammar and should update or remove this test then.
+TEST(ParserUnimplementedFeatures, BareAmpersandDoesNotParseWithoutJobControlSupport) {
+    // & (background execution) is required for full credit on the job
+    // control tests (README.md). The provided grammar does not recognize it
+    // as written; a student adding job control will need to extend the
+    // grammar and should update or remove this test then.
     std::vector<ish::command> commands;
     EXPECT_FALSE(ParseLine("ls &", commands));
 }

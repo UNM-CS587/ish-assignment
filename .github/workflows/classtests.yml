@@ -5,7 +5,7 @@ name: Autograding Tests
       - main
   pull_request:
     branches:
-      -main
+      - main
 permissions:
   checks: write
   actions: read

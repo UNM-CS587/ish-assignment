@@ -59,4 +59,5 @@ echo bare name should not be found
 $ SHELL
 PROMPT PROMPT PROMPT full path still works
 PROMPT exit
->2 /(Command not found)|(command not found)/
+>2
+echo: Command not found.
