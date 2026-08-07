@@ -1,1 +1,31 @@
-build
+# Build output, both the out-of-source build/ directory this project uses and
+# the artifacts an accidental in-source `cmake .` leaves behind.
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+
+# LaTeX output. report.pdf is a build product; the rest is latexmk scratch.
+report/report.pdf
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local agent configuration, and anything that might hold an API key. Committing
+# a credential means rotating it, so keep the whole class of file out.
+.claude/settings.local.json
+setup-claude-access.sh
+*.env

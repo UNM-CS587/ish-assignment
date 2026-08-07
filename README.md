@@ -1,7 +1,7 @@
 # CS587 - Advanced Operating Systems Project 1: The `ish` shell
 
 ## Due Date
-  * Code and Report Due Date: Friday, September 10, 2026, 11:59pm
+  * Code and Report Due Date: Friday, September 11, 2026, 11:59pm
   * In-class Code Test: Monday, September 14, 2026, 9:00am
 
 ## Assignment Overview
@@ -43,17 +43,35 @@ implement the features described in the included ISH manual page (ish.man.pdf).
 Note that the parser does not yet parse job control or pipelines, but for full 
 credit on the assignment you will need to extend it to do so.
 
+The manual page is the specification. Where this README and the manual page
+disagree, the manual page wins; tell me about the disagreement so I can fix
+the README. The page is reprinted from the course this assignment came from
+originally, so its footer reads `CSc 552` rather than CS587. Ignore that.
+
 The classtest/ directory holds the graded test cases, worth 100 points total
 on the `.github/workflows/classtests.yml` autograder, split into the nine
-categories below. Corner Tests runs two ctest targets under that one
-10-point weight: `corner.test` (shelltest cases) and `resource-leak.sh`
-(a script that drives ish directly to check for leaked file descriptors
-and zombie processes, since that isn't expressible as shelltest
-input/output matching).
+categories below. Three of those categories bundle two ctest targets under a
+single weight, because `ctest -R` matches test names by substring rather than
+exactly:
+
+  * `ctest -R CornerTests` also runs `resource-leak.sh`
+  * `ctest -R JobControlTests` also runs `job-control-signals.sh`
+  * `ctest -R PipelineTests` also runs `pipeline-signals.sh`
+
+Those three scripts drive `ish` directly instead of going through shelltest,
+because what they check -- leaked file descriptors, zombie children, and the
+delivery of a real SIGTSTP to a job's process group -- cannot be expressed as
+input/output matching. They are graded, and they are worth as much as the
+shelltest cases beside them.
 
   * Basic Tests - 15 points
-    * Correct shell prompt as described in the manual page
-    * Clean shell exit at EOF
+    * Correct shell prompt as described in the manual page: the machine's
+      hostname, a `%`, and then one space, with no newline. A page of
+      typeset text cannot show you a trailing space, so it is spelled out
+      here; the tests compare it byte for byte.
+    * Clean shell exit at EOF: print `exit` and a newline, then terminate.
+      The manual page describes termination by `quit` and by SIGTERM but
+      says nothing about end of input, so follow `csh` and do this.
     * Run a command by its full path, with no arguments, one argument,
       multiple arguments, or a quoted argument
     * Run more than one command in a session, including several combined
@@ -79,6 +97,8 @@ input/output matching).
     * `printenv` (`setenv` with no arguments) works
     * `unsetenv` works
     * PATH searching works
+    * PATH searching skips a nonexistent directory instead of failing, and
+      setting PATH to empty is handled gracefully rather than crashing
 
   * Redirection Tests - 15 points
     * Redirect output to a simple file, including a file that already
@@ -102,8 +122,6 @@ input/output matching).
       afterward
     * Environment and aliases changed in `.ishrc` are visible in the
       interactive shell afterward
-    * PATH searching skips a nonexistent directory instead of failing, and
-      setting PATH to empty is handled gracefully rather than crashing
     * The shell does not leak file descriptors or leave zombie child
       processes after running redirected and backgrounded commands
 
@@ -115,6 +133,7 @@ input/output matching).
     * Stop a running job with ^Z, then use `bg` and `fg` to continue it in
       the background or foreground, respectively
     * List the status of running jobs with the `jobs` builtin
+    * Send a signal to a job with the `kill` builtin
     * Report the completion of background jobs before the next prompt
     * Referencing a job number that doesn't exist is reported as an error
 
@@ -128,6 +147,24 @@ input/output matching).
     * Support all job control features - backgrounding, `jobs`, ^Z/`bg`/`fg`
       - on a pipeline as a single job
 
+A job reference is a `%` followed by a **job number** -- the same number
+`jobs` lists and the `[N]` startup message reports -- so `fg %1`, `bg %2`,
+and `kill %1` all name job 1 and job 2, not processes 1 and 2. The manual
+page's `%1234` example reuses the process ID printed on the line above it,
+which contradicts its own job control paragraph; when the manual page is
+unclear, follow `csh`, and `csh` takes a job number here. The test cases
+assume the job number.
+
+Every diagnostic `ish` prints -- a command it cannot find, a redirection it
+cannot open, a job number that isn't there -- goes to stderr, not stdout. The
+test cases compare the two streams separately, so a shell that reports errors
+on stdout fails them even when the wording is right.
+
+The autograder does not check every feature the manual page specifies. It
+checks the nine categories above. The rest of the manual page is still
+required, is still worth implementing, and is fair game on the in-class code
+test.
+
 If you are in doubt about the functionality of `ish` or how it should behave in
 a particular situation, model the behavior on that of `csh`.  If you have 
 specific questions about the project, ask in the class Discord.
@@ -137,9 +174,9 @@ specific questions about the project, ask in the class Discord.
 Your shell will be written in C++, compile using cmake, and produce an 
 executable named `ish`. I have provided you this GitHub repository with the
 basic compilation and software engineering infrastructure, most of 
-a C++ parser for the assignment ([src/](src/) directory, functional testcases 
-which will be used to grade the correctness of your program, and unit tests
-for the parser. Note, however, the provided C++ starter code does *not* 
+a C++ parser for the assignment (the [src/](src/) directory), functional
+testcases which will be used to grade the correctness of your program, and
+unit tests for the parser. Note, however, the provided C++ starter code does *not* 
 parse background jobs or pipelines; to complete that portion of the 
 assignment, you will need to (with AI help) add support for parsing job
 control and pipelines to the provided parser.
@@ -158,8 +195,11 @@ In terms of the system interfaces and libraries you may and may not use:
      the C standard library, their C++ equivalents, or any other mechanism
      for creating processes or redirecting file I/O. 
   1. Similarly, you must manually maintain the environment as data 
-     passed to the `execve` call and may not use the `getenv` or `setenv` C 
-     library calls or their C++ equivalent.
+     passed to the `execve` call. The manual page names `putenv` and 
+     `getenv` specifically, and the rule above already rules out `setenv`,
+     `unsetenv`, and their C++ equivalents. Note that `setenv` and 
+     `unsetenv` are also the names of two builtins you must implement; the
+     ban is on the C library routines, not on the builtins.
   1. You must cite any library you use outside of the standard C and C++ 
      libraries, including any Boost libraries you use besides the Boost
      Spirit X3 Parser already used.
@@ -172,12 +212,12 @@ to read (in addition to correct).
 ## Required Report 
 In addition to the source code you must implement, you must also write a report
 describing how you implemented each of the features described above using the
-UNIX system call interface, how to verified the correctness of these modules
+UNIX system call interface, how you verified the correctness of these modules
 so that they don't just pass the functional tests but actually implement the 
 feature generally, and your experience using AI tools to implement these 
 features. You may use AI tools to assist you in editing and revising this 
 report, but *you should provide the draft text, bullet points, or other 
-content* that the AIs help you revise decribing your code and how it works.
+content* that the AIs help you revise describing your code and how it works.
 A suggested outline for this report is included in 
 [report/report.tex](report/report.tex).
 
@@ -187,7 +227,7 @@ Testcases that test correctness of the shell output and of key shell components
 are included in the provided repository. Specifically:
   - Class grading tests on which your shell is graded are specified in the 
     classtest/ directory and are run by the github workflow described in 
-    .github/workflows/classtests.yml; these tests are purely funcational and 
+    .github/workflows/classtests.yml; these tests are purely functional and 
     work by executing the shell on commit to the main branch. *Do not change 
     classtests.yml or any of the tests in the classtest/ directory. Changing
     class testing infrastructure to increase your grade will be handled as
@@ -207,6 +247,15 @@ GitHub branch will be graded. You must ensure that your completed work is on
 this branch!  Be sure to commit and push all of your changes to the `main`
 branch on your repository prior to the due date!
 
+Two things about forks will bite you if you don't know about them:
+  1. GitHub disables Actions on a new fork. Open the Actions tab on your fork
+     and enable workflows, or nothing will run and you will get no test
+     feedback at all.
+  1. Branch protection is a repository setting, not a file, so none of the
+     protection on the instructor's repository travels with your fork. See
+     [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for how to recreate it on
+     yours if you want it.
+
 ## Computer Development Environments
 
 You should ensure that you have a high-quality environment for authoring, 
@@ -214,7 +263,7 @@ compiling, and running your program. You may use the development environment
 of your choice to do so, though I provide some advice on what to look for
 in a development environment below. Any modern Linux, Windows, or MacOS 
 system should be able to build and install the shell with the proper
-tools installed, as described below. More information in suggested general
+tools installed, as described below. More information on suggested general
 development environments and a general software engineering workflow
 can be found in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
@@ -260,9 +309,7 @@ A few final bits of advice:
      those features.
   1. Use pull requests to merge individual features to the develop branch as 
      they are completed, paying attention to previous test cases to make sure 
-     they don't break as you develop new features. Note that by default, the 
-     develop branch is protected so only pull requests that pass all of their 
-     test cases can be merged to develop.
+     they don't break as you develop new features.
   1. As developed features are completed and documented, periodically use pull 
      requests to merge features to `main` and ensure that the class tests are 
      also making progress. While having separate `main` and `develop` branches 

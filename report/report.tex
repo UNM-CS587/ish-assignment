@@ -6,7 +6,7 @@
 \usepackage{hyperref}
 
 \title{CS 587 Project 1: AI Coding of the \texttt{ish} Shell}
-\author{TODO: Your Name}
+\author{Your Name Here}
 \date{\today}
 
 \begin{document}
@@ -14,15 +14,15 @@
 \maketitle
 
 % This report explains how your shell uses the UNIX system call interface
-% implement basic command shell features, as well as your experiences
+% to implement basic command shell features, as well as your experiences
 % using AI tools and models to develop your shell. State what you did and 
 % how you verified it; do not narrate your development process.
 
 \section{Overview}
 % One or two paragraphs. What is the high-level structure of your shell
-% in terms of modules, parsing does your shell do, and what is the
-% scope of this report? Name which required features you implemented
-% and whether you attempted the pipeline or job control extra credit.
+% in terms of modules, what parsing does your shell do, and what is the
+% scope of this report? Name which required features you implemented,
+% including pipelines and job control.
 
 \section{Process Creation and Command Execution}
 % How does your shell execute a parsed command line and turn it
@@ -55,14 +55,14 @@
 
 \section{Job Control}
 % Once the parser was changed, how did you handle:
-% 1. creation of and waiting for % background jobs
-% 2. detecting when ^Z was pressed at the terminal
-% 3. Report status changesf background jobs, 
-% 4. The bg/fg/jobs builtins.
+% 1. Creation of and waiting for background jobs
+% 2. Detecting when ^Z was pressed at the terminal
+% 3. Reporting status changes of background jobs
+% 4. The bg, fg, jobs, and kill builtins
 
 \section{Pipelines}
 % Describe how the parser changed to represent pipelines, how
-% you used the pipe(), fork(), and dup2() system calls, and how '
+% you used the pipe(), fork(), and dup2() system calls, and how
 % the shell handled job control of entire pipelines.
 
 \section{Testing}
@@ -77,7 +77,7 @@
 % and how easy was the AI-generated code to understand?
 
 \section{Conclusions}
-% Summarize of your experiences with the assignment, including what
+% Summary of your experiences with the assignment, including what
 % you learned about the UNIX system interface, using AI tools for
 % coding, the AI software engineering workflow, and anything else
 % you want to discuss.

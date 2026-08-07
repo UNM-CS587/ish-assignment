@@ -38,7 +38,7 @@ void processCommands(std::istream &istr, std::ostream& ostr, bool interactive)
 
 } //namespace ish
 
-int main(int argc, char *argv[])
+int main()
 {
     ish::processCommands(std::cin, std::cout, true);
     return 0;

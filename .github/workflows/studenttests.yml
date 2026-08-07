@@ -1,7 +1,13 @@
 name: Student Tests
 'on':
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 permissions:
   checks: write
   actions: read
@@ -18,13 +24,20 @@ jobs:
       run: cmake -B ${{github.workspace}}/build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     - name: Build
       run: cmake --build ${{github.workspace}}/build 
+    # Run every test you register with add_test() in studenttest/, not just the
+    # provided parser_test binary.
     - name: Student Tests
-      run: |
-        cd build
-        ./studenttest/parser_test --gtest_output="xml:student-test-results.xml" || true
+      run: ctest --test-dir ${{github.workspace}}/build -R StudentTests --output-junit student-test-results.xml
+      # On a push we want the report below to be what fails the run, so it can
+      # say which test broke. On a pull request from a fork the report can't be
+      # published at all, so a failing ctest has to fail the job right here.
+      continue-on-error: ${{ github.event_name == 'push' }}
+    # dorny/test-reporter needs `checks: write`, and GITHUB_TOKEN is read-only
+    # for pull_request runs originating from a fork. Publishing there would 403
+    # and, with fail-on-error, put a red X on every student pull request.
     - name: Publish Test Report
       uses: dorny/test-reporter@v3
-      if: always() # Ensures report runs even if previous build steps had failed tests
+      if: always() && github.event_name == 'push'
       with:
         name: 'Student Test Results'
         path: 'build/student-test-results.xml'
