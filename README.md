@@ -166,6 +166,30 @@ cannot open, a job number that isn't there -- goes to stderr, not stdout. The
 test cases compare the two streams separately, so a shell that reports errors
 on stdout fails them even when the wording is right.
 
+Two of those cases compare the wording byte for byte, so report errors the way
+`csh` does. A failed `execve(2)` with `ENOENT` prints `name: Command not
+found.`, both for a bare name `PATH` could not resolve and for a full path that
+does not exist. A failed `execve(2)` with any other `errno` prints `name: `
+followed by `strerror(errno)`, so a file that exists but is not executable
+prints `Permission denied.` A redirection that cannot be opened prints the
+path, a colon, and `strerror(errno)`. All three end with a period.
+
+Several other graded cases compare output against `csh`'s formats, so match
+those too. `alias` with no arguments prints one alias per line as the name, a
+tab, then the value. `setenv` with no arguments prints one variable per line as
+`NAME=value`. `jobs` prints the job number in brackets, then the job's status,
+then the command the job is running, and calls a job stopped by a TSTP signal
+`Stopped`. The report the shell prints when a background job finishes carries
+the same bracketed job number and names the command as well.
+
+A skipped test category is not a passed one. `ctest` refuses to run some
+categories when your environment cannot support them -- you are root, you have
+no home directory, or you already have a `~/.ishrc` that the startup-file cases
+would otherwise overwrite -- and then reports `100% tests passed` anyway. Read
+`ctest`'s per-test lines rather than its summary, and fix the condition the
+skip message names. The autograder runs the same tests with `CI` set, where
+those conditions fail instead of skipping.
+
 The autograder does not check every feature the manual page specifies. It
 checks the nine categories above. The rest of the manual page is still
 required, is still worth implementing, and is fair game on the in-class code

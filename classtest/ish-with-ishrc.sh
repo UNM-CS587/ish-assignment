@@ -6,7 +6,7 @@
 # the scratch sandbox and refuses to run when a .ishrc is already there. The
 # save and restore below is a second line of defense for anyone running this
 # script by hand outside the harness.
-ISHHOME="${ISHHOME:-$(perl -e 'print((getpwuid($<))[7])')}"
+ISHHOME="${ISHHOME:-$(python3 -c 'import os, pwd; print(pwd.getpwuid(os.getuid()).pw_dir)')}"
 SAVED=""
 if [ -f "$ISHHOME/.ishrc" ]; then
     SAVED=$(mktemp)

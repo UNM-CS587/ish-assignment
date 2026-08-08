@@ -7,6 +7,11 @@
 set -u
 
 ISH="$1"
+
+# ish reads ~/.ishrc through getpwuid(3), so an existing one runs before this
+# script's first command and puts extra lines in the log the checks below grep.
+. "$(dirname "$0")/ishhome.sh"
+
 WORKDIR=$(mktemp -d)
 FIFO="$WORKDIR/in"
 LOG="$WORKDIR/out"
@@ -41,6 +46,17 @@ wait_for() {
   return 0
 }
 
+# Byte offset of the end of the log, so a later check can read only what the
+# shell printed after this point. See job-control-signals.sh for why a plain
+# `tail -n` re-reads output an earlier command produced.
+mark() {
+  wc -c < "$LOG"
+}
+
+since() {
+  tail -c "+$(($1 + 1))" "$LOG"
+}
+
 # Opening a FIFO write-only blocks until a reader opens it, which would hang
 # this script forever if ish died before its first read. Opening read-write
 # never blocks, so a dead ish shows up as the explicit check below rather than
@@ -51,8 +67,11 @@ exec 3<>"$FIFO"
 kill -0 "$ISH_PID" 2>/dev/null || fail "ish exited immediately instead of reading commands"
 
 # Background a two-stage pipeline and find one of its process IDs from the
-# "[1] pid pid" message.
-send "/bin/sleep 2 | /bin/cat &"
+# "[1] pid pid" message. The pipeline has to outlast the fixed delays below:
+# sleep counts the time it spends stopped against its argument, so a pipeline
+# shorter than the roughly two seconds this script spends getting to fg is
+# already gone by the time fg runs.
+send "/bin/sleep 5 | /bin/cat &"
 wait_for '\[1\] [0-9]+ [0-9]+' || fail "backgrounded pipeline never printed [1] pid pid"
 PIPE_PID=$(grep -Eo '\[1\] [0-9]+' "$LOG" | tail -1 | sed -E 's/\[1\] //')
 [ -n "$PIPE_PID" ] || fail "could not parse a pid from the backgrounded pipeline"
@@ -75,16 +94,17 @@ tail -5 "$LOG" | grep -Eiq '\[1\].*stop' \
 # %1 is the job number reported in "[1] pid pid" above, not a process ID.
 send "bg %1"
 sleep 0.5
+BG_MARK=$(mark)
 send "jobs"
 sleep 0.5
-tail -5 "$LOG" | grep -Eiq 'stop' \
+since "$BG_MARK" | grep -Eiq 'stop' \
   && fail "pipeline is still reported stopped after bg"
 
 # fg should block until every stage of the pipeline has finished.
 START=$(date +%s)
 send "fg %1"
 send "/bin/echo FG_RETURNED"
-wait_for 'FG_RETURNED' || fail "fg %1 never returned"
+wait_for 'FG_RETURNED' 75 || fail "fg %1 never returned"
 ELAPSED=$(( $(date +%s) - START ))
 [ "$ELAPSED" -ge 1 ] \
   || fail "fg %1 returned in ${ELAPSED}s without waiting for the pipeline to finish"

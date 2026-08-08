@@ -8,6 +8,12 @@
 set -u
 
 ISH="$1"
+
+# ish reads ~/.ishrc through getpwuid(3), so an existing one runs before this
+# script's first command and shifts the open-descriptor baseline the checks
+# below compare against exactly.
+. "$(dirname "$0")/ishhome.sh"
+
 WORKDIR=$(mktemp -d)
 FIFO="$WORKDIR/in"
 LOG="$WORKDIR/out"

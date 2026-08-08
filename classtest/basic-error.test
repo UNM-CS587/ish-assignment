@@ -1,6 +1,8 @@
-# Test what happens if we run a non-existent program. csh reports a failed
-# exec as "Command not found.", whatever errno says, and README.md tells you
-# to report errors the way csh does.
+# Test what happens if we run a non-existent program. csh splits exec errors
+# by errno: ENOENT reports "Command not found.", any other errno reports
+# strerror(errno) -- so a file that exists but isn't executable reports
+# "Permission denied." (see the next case). README.md tells you to report
+# errors the way csh does.
 <
 /bin/invalid
 $ SHELL
