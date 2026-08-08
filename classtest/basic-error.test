@@ -1,10 +1,12 @@
-# Test what happens if we run a non-existent program
+# Test what happens if we run a non-existent program. csh reports a failed
+# exec as "Command not found.", whatever errno says, and README.md tells you
+# to report errors the way csh does.
 <
 /bin/invalid
 $ SHELL
 PROMPT PROMPT exit
->2 
-/bin/invalid: No such file or directory
+>2
+/bin/invalid: Command not found.
 
 # Test what happens if the file in the local directory isn't executable
 <

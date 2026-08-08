@@ -155,6 +155,12 @@ which contradicts its own job control paragraph; when the manual page is
 unclear, follow `csh`, and `csh` takes a job number here. The test cases
 assume the job number.
 
+`cd` with no argument and the `~/.ishrc` startup file both need the user's
+home directory, and the manual page says no environment variables are set for
+`ish` initially -- so `$HOME` is not yours to read. Get the directory from
+`getpwuid(3)`, as `csh` does. The test cases run `ish` with `HOME` pointing
+somewhere else, so a shell that calls `getenv("HOME")` fails them.
+
 Every diagnostic `ish` prints -- a command it cannot find, a redirection it
 cannot open, a job number that isn't there -- goes to stderr, not stdout. The
 test cases compare the two streams separately, so a shell that reports errors
