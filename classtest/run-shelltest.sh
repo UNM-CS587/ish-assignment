@@ -22,14 +22,19 @@ ISH="$2"
 TESTFILE="$3"
 NEEDS_NONROOT="${4:-}"
 
+# Resolves ISHHOME, refuses to run on top of an existing ~/.ishrc, and defines
+# ish_bail and ISH_BAIL. See that file for why a skip is right locally and
+# wrong under CI.
+. "$(dirname "$0")/ishhome.sh"
+
 # Root bypasses permission bits, so a test that asserts "Permission denied"
 # cannot pass as root no matter how the target is created. Report that as a
 # skip with a reason rather than as a mysterious output mismatch. CI runs as a
 # normal user, so grading is unaffected.
 if [ "$NEEDS_NONROOT" = "--needs-nonroot" ] && [ "$(id -u)" = "0" ]; then
-    echo "SKIPPED: $TESTFILE asserts a permission-denied error, which cannot"
+    echo "$ISH_BAIL: $TESTFILE asserts a permission-denied error, which cannot"
     echo "happen when running as root. Run the test suite as a non-root user."
-    exit 77
+    ish_bail
 fi
 
 SCRATCH=$(mktemp -d)
@@ -45,6 +50,13 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 cp "$FIXTURES"/*.test "$FIXTURES"/*.sh "$FIXTURES"/*.ish "$FIXTURES"/redirectin.txt "$SCRATCH"/
+
+# cp carries the source mode through, so the fixture scripts are executable
+# here only as long as the checkout kept their execute bit. A Windows
+# filesystem, an extracted archive, or a core.fileMode=false repository drops
+# it, and the cases that run a fixture then fail with a permission error that
+# has nothing to do with what they test.
+chmod 755 "$SCRATCH"/*.sh
 
 # A directory the tests can redirect into to provoke a permission error,
 # instead of depending on / and /etc being unwritable. Those are writable for a
@@ -62,29 +74,6 @@ cd "$SCRATCH"
 # scratch directory and fails the cd cases, which is the point.
 HOME="$SCRATCH"
 export HOME
-
-ISHHOME=$(perl -e 'print((getpwuid($<))[7])' 2>/dev/null || true)
-if [ -z "$ISHHOME" ] || [ ! -d "$ISHHOME" ] || [ ! -w "$ISHHOME" ]; then
-    echo "SKIPPED: getpwuid(3) reports no writable home directory for uid"
-    echo "$(id -u), so cd with no arguments and ~/.ishrc have nothing to"
-    echo "resolve to. Run the test suite as a user with a home directory."
-    exit 77
-fi
-# Physical path, for the reason given above the scratch directory.
-ISHHOME=$(cd "$ISHHOME" && pwd -P)
-export ISHHOME
-
-# The .ishrc cases install a startup file in that home directory, because that
-# is where ish looks for it and no $HOME override can move it. Refuse to run
-# on top of one that is already there: overwriting it would destroy the
-# student's file, and leaving it in place would feed extra commands into every
-# case that counts prompts and fail them for a reason the output never shows.
-if [ -e "$ISHHOME/.ishrc" ]; then
-    echo "SKIPPED: $ISHHOME/.ishrc exists. ish finds its startup file through"
-    echo "getpwuid(3) rather than \$HOME, so the tests cannot redirect it into"
-    echo "a sandbox. Move the file aside and run the tests again."
-    exit 77
-fi
 
 # uname -n reports what gethostname(2) returns, which is what ish itself will
 # use to build the prompt.

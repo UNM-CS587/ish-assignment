@@ -15,7 +15,7 @@ PROMPT PROMPT exit
 $ SHELL
 PROMPT PROMPT PROMPT exit
 >2
-does-not-exist.txt: No such file or directory
+does-not-exist.txt: No such file or directory.
 
 # Test redirect ambiguous output
 <
