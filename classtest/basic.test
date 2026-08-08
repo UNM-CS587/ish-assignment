@@ -57,7 +57,7 @@ PROMPT exit
 
 # Test what happens if we run from a relative path
 <
-/bin/chmod 700 ./testscript.sh; ./testscript.sh
+./testscript.sh
 $ SHELL
 PROMPT In the test script
 PROMPT exit

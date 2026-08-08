@@ -32,11 +32,10 @@ PROMPT exit
 # Test that a plain | pipeline connects only the first command's stdout to
 # the next command's stdin; its stderr still goes to the terminal
 <
-/bin/chmod 700 ./pipesplit.sh
 ./pipesplit.sh | /bin/cat
 $ SHELL
 >
-PROMPT PROMPT stdout-line
+PROMPT stdout-line
 PROMPT exit
 >2
 stderr-line

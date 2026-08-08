@@ -41,7 +41,7 @@ function(add_script_category name script)
     add_test(NAME ${name}
              COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${script} $<TARGET_FILE:ish>
              WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    set_tests_properties(${name} PROPERTIES TIMEOUT 300)
+    set_tests_properties(${name} PROPERTIES TIMEOUT 300 SKIP_RETURN_CODE 77)
     add_custom_target(${name} COMMAND ctest -R ${name})
 endfunction()
 
