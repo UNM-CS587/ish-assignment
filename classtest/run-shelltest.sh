@@ -33,9 +33,9 @@ if [ "$NEEDS_NONROOT" = "--needs-nonroot" ] && [ "$(id -u)" = "0" ]; then
 fi
 
 SCRATCH=$(mktemp -d)
-# Resolve symlinks now: /bin/pwd inside ish prints the physical path, so a
-# HOME that traverses a symlink (macOS /var, some WSL setups) would make a
-# correct cd fail the comparison.
+# Resolve symlinks now: /bin/pwd inside ish prints the physical path, so any
+# path an expectation is built from has to be physical too. macOS puts mktemp
+# output under /var, which is a symlink to /private/var.
 SCRATCH=$(cd "$SCRATCH" && pwd -P)
 
 cleanup() {
@@ -55,11 +55,36 @@ chmod 500 "$SCRATCH/nowrite"
 
 cd "$SCRATCH"
 
-# Point HOME at the scratch directory. This keeps ~/.ishrc handling inside the
-# test sandbox: the suite can neither destroy a student's real ~/.ishrc nor
-# read one and fail every test that counts prompts.
+# The manual page says no environment variables are set for ish initially, so
+# ish cannot learn where home is from $HOME. Like csh, it has to ask
+# getpwuid(3). Point $HOME at the scratch directory and take the expected home
+# from getpwuid instead: a shell that calls getenv("HOME") then lands in the
+# scratch directory and fails the cd cases, which is the point.
 HOME="$SCRATCH"
 export HOME
+
+ISHHOME=$(perl -e 'print((getpwuid($<))[7])' 2>/dev/null || true)
+if [ -z "$ISHHOME" ] || [ ! -d "$ISHHOME" ] || [ ! -w "$ISHHOME" ]; then
+    echo "SKIPPED: getpwuid(3) reports no writable home directory for uid"
+    echo "$(id -u), so cd with no arguments and ~/.ishrc have nothing to"
+    echo "resolve to. Run the test suite as a user with a home directory."
+    exit 77
+fi
+# Physical path, for the reason given above the scratch directory.
+ISHHOME=$(cd "$ISHHOME" && pwd -P)
+export ISHHOME
+
+# The .ishrc cases install a startup file in that home directory, because that
+# is where ish looks for it and no $HOME override can move it. Refuse to run
+# on top of one that is already there: overwriting it would destroy the
+# student's file, and leaving it in place would feed extra commands into every
+# case that counts prompts and fail them for a reason the output never shows.
+if [ -e "$ISHHOME/.ishrc" ]; then
+    echo "SKIPPED: $ISHHOME/.ishrc exists. ish finds its startup file through"
+    echo "getpwuid(3) rather than \$HOME, so the tests cannot redirect it into"
+    echo "a sandbox. Move the file aside and run the tests again."
+    exit 77
+fi
 
 # uname -n reports what gethostname(2) returns, which is what ish itself will
 # use to build the prompt.
@@ -71,5 +96,5 @@ PROMPT="$(uname -n)%"
 exec shelltest -o 20 \
     -DPROMPT="$PROMPT" \
     -DSHELL="$ISH" \
-    -DHOME="$SCRATCH" \
+    -DHOME="$ISHHOME" \
     "$TESTFILE"

@@ -57,6 +57,11 @@ add_shelltest_category(CornerTests       corner.test)
 add_shelltest_category(JobControlTests   job-control.test)
 add_shelltest_category(PipelineTests     pipeline.test)
 
+# Two of the corner cases put a .ishrc in the real home directory for as long
+# as they run, and ish finds that file through getpwuid(3), so every other
+# category would read it too. Keep this one from overlapping with the rest.
+set_tests_properties(CornerTests PROPERTIES RUN_SERIAL TRUE)
+
 add_script_category(CornerTestsResourceLeak resource-leak.sh)
 add_script_category(JobControlTestsSignals  job-control-signals.sh)
 add_script_category(PipelineTestsSignals    pipeline-signals.sh)
