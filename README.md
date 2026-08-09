@@ -241,13 +241,16 @@ to read (in addition to correct).
 
 ## Required Report 
 In addition to the source code you must implement, you must also write a report
-describing how you implemented each of the features described above using the
-UNIX system call interface, how you verified the correctness of these modules
-so that they don't just pass the functional tests but actually implement the 
+providing a high-level overview how you implemented each of the features described 
+above using the UNIX system call interface, how you verified the correctness of 
+these modules so that they don't just pass the functional tests but actually implement the 
 feature generally, and your experience using AI tools to implement these 
 features. You may use AI tools to assist you in editing and revising this 
 report, but *you should provide the draft text, bullet points, or other 
-content* that the AIs help you revise describing your code and how it works.
+content* that the AIs help you revise describing your code and how it works. 
+Your report should be a high-level design of the general strategy of each
+major feature that highlights the system interfaces used; it should *not* 
+provided detailed design notes from the AI detail design of the each feature.
 A suggested outline for this report is included in 
 [report/report.tex](report/report.tex).
 
