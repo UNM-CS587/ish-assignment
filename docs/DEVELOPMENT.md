@@ -75,12 +75,11 @@ using a two-tier (main/feature) version of this workflow instead of the
 more complex three-tier (main/develop/feature) version because you will
 be working as a single developer implementing features sequentially. 
 The three-tier version is helpful when multiple developers are 
-simultaneously developing features on multple feature branches 
-simultaneously.
+developing features on several feature branches at the same time.
 
 To support this, the `main` branch in the instructor's repository is 
 protected so that:
-  * Commits cannot be pushed to them directly; all changes arrive through a
+  * Commits cannot be pushed to it directly; all changes arrive through a
     pull request.
   * The GitHub Actions workflow `.github/workflows/studenttests.yml` must
     pass before a pull request can be merged to `main`.
@@ -90,4 +89,4 @@ files, so **your fork does not inherit any of it.** If you want the same
 safety net on your own repository, recreate it under Settings > Rules >
 Rulesets: target `main`, require a pull request before merging with zero 
 required approvals (you cannot approve your own), and require the 
-`run-student-tests` status checks.
+`run-student-tests` status check.

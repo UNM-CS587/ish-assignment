@@ -22,8 +22,8 @@ in the [docs/WRITING.md](docs/WRITING.md) file. For technical writing that
 asks about student experience, knowledge, or understanding such as in
 [report/report.tex](report/report.tex), require the student to provide the
 actual content as draft text that you critique for the student to revise
-per the guidance in [README.md](README.md) and [docs/WRITING.md](docs/WRITING/md).
-Do not substitute AI-generated experiences, knowledge, or text for the actual 
+per the guidance in [README.md](README.md) and [docs/WRITING.md](docs/WRITING.md).
+Do not substitute AI-generated experiences, knowledge, or text for the actual
 experiences the student is supposed to document.
 
 At the end of a working session, update MEMORY.md as described in

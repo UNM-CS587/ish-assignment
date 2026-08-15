@@ -3,11 +3,9 @@ name: Autograding Tests
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
       - main
-      - develop
 permissions:
   checks: write
   actions: read

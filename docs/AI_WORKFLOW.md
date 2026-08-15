@@ -98,7 +98,7 @@ or point it at specific line ranges instead of whole files where you can.
 
 A productive pattern for working with an AI coding agent on one feature at
 a time:
-  1. Branch. Create a feature branch off `develop` for the single feature
+  1. Branch. Create a feature branch off `main` for the single feature
      you're adding (e.g. `feature/io-redirection`).
   2. Orient the agent. Point it at the relevant section of the manual page
      and the existing parser code.
@@ -112,15 +112,15 @@ a time:
      change you can't explain in the in-class test or to the instructor.
   6. Commit with a real message. Record what the feature is and, per this
      project's grading requirements, note what you prompted the AI to do.
-  7. Open the pull request into `develop` once the feature's tests pass
+  7. Open the pull request into `main` once the feature's tests pass
      locally.
 
 For example, adding output redirection might go: branch
-`feature/output-redirection` off `develop`; ask the agent to explain how
+`feature/output-redirection` off `main`; ask the agent to explain how
 the provided parser represents redirection targets; ask it to draft
 failing test cases for `cmd > file` and `cmd >> file`; ask it to implement
 the `dup2`-based redirection in the executor; run the test suite; commit;
-open a pull request into `develop`.
+open a pull request into `main`.
 
 At the end of each work session, ask your agent to summarize the session
 into a short `MEMORY.md` file covering:
