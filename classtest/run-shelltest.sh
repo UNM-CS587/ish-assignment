@@ -46,6 +46,12 @@ SCRATCH=$(cd "$SCRATCH" && pwd -P)
 cleanup() {
     chmod -R u+rwX "$SCRATCH" 2>/dev/null || true
     rm -rf "$SCRATCH"
+    # ishhome.sh already proved this did not exist when we started, so whatever
+    # is here now is a fixture a timed-out case left behind: shelltest -o kills
+    # ish-with-ishrc.sh too hard for that script's own trap to fire. Left in
+    # place it is self-perpetuating, because the guard then skips (or, under
+    # CI, fails) every category on the next run.
+    rm -f "$ISHHOME/.ishrc"
 }
 trap cleanup EXIT INT TERM
 

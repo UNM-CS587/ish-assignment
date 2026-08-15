@@ -21,6 +21,9 @@ mkfifo "$FIFO"
 
 cleanup() {
   exec 3>&- 2>/dev/null
+  # A stopped ish does not die from the TERM below, and the wait then blocks
+  # forever. Continue it first so the signal can be delivered.
+  kill -CONT "$ISH_PID" 2>/dev/null
   kill "$ISH_PID" 2>/dev/null
   wait "$ISH_PID" 2>/dev/null
   # A failure below can leave the long-lived job of the kill test behind, and
