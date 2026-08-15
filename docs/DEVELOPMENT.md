@@ -60,44 +60,34 @@ WSL2. If using homebrew, you'll want the following packages:
 
 ## GitHub Software Engineering Workflow
 
-Use a three-tier branching model: `main`, `develop`, and short-lived feature
-branches cut from `develop`.
-  * `main` holds only released, working code. The class instructor grades
+Use a two-tier branching model: `main`, and short-lived feature
+branches cut from `main` (e.g. `feature/pipeline-parsing`).
+  * `main` holds only tested, working code. The class instructor grades
     this branch, so nothing incomplete or broken belongs here.
-  * `develop` is the integration branch. Merge each finished feature into
-    `develop` through a pull request once its tests pass.
   * Feature branches (e.g. `feature/pipeline-parsing`, `feature/job-control`)
-    hold the work for one feature at a time. Branch from `develop`, add the
-    code and test cases for that feature together, and open a pull request
-    back into `develop` when it's ready.
+    hold the work for one feature at a time. Branch from `main`, add the
+    code and test cases for that feature together, and once the relevant
+    test cases pass, open a pull request back into `main`.
 
 This is a simplified version of the branching model Vincent Driessen
-described in "A successful Git branching model" (nvie.com, 2010).
+described in "A successful Git branching model" (nvie.com, 2010); we are
+using a two-tier (main/feature) version of this workflow instead of the
+more complex three-tier (main/develop/feature) version because you will
+be working as a single developer implementing features sequentially. 
+The three-tier version is helpful when multiple developers are 
+simultaneously developing features on multple feature branches 
+simultaneously.
 
-To support this, the `main` and `develop` branches in the instructor's
-repository are protected so that:
+To support this, the `main` branch in the instructor's repository is 
+protected so that:
   * Commits cannot be pushed to them directly; all changes arrive through a
     pull request.
-  * The GitHub Actions workflows (`.github/workflows/classtests.yml` and
-    `.github/workflows/studenttests.yml`, both on `main` and `develop`)
-    must pass before a pull request can merge.
+  * The GitHub Actions workflow `.github/workflows/studenttests.yml` must
+    pass before a pull request can be merged to `main`.
 
 Branch protection lives in the repository's settings rather than in its
 files, so **your fork does not inherit any of it.** If you want the same
 safety net on your own repository, recreate it under Settings > Rules >
-Rulesets: target `main` and `develop`, require a pull request before
-merging with zero required approvals (you cannot approve your own), and
-require the `run-autograding-tests` and `run-student-tests` status checks.
-It is worth the five minutes. It is the same safety net you'll rely on in
-later, larger projects: broken code never lands on the branch that's graded
-or the branch your teammates build on, and every merge has a passing test
-run to point to.
-
-This setup also allows for a software repository to have multiple programmers 
-working on different feature branches at the same time, with pull requests and 
-conflicts from these feature branches handled when merging to the `develop` branch. 
-You could _in theory_ leverage this by having different AI agent instances work 
-in different feature branches at the same time. However, this requires careful 
-software planning to keep those feature branches mostly independent and can 
-result in complex conflicts when merging feature branches into `develop`. As 
-a result, I suggest that you do *not* do this for this project.
+Rulesets: target `main`, require a pull request before merging with zero 
+required approvals (you cannot approve your own), and require the 
+`run-student-tests` status checks.

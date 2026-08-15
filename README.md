@@ -4,13 +4,26 @@
   * Code and Report Due Date: Friday, September 11, 2026, 11:59pm
   * In-class Code Test: Monday, September 14, 2026, 9:00am
 
+## Assignment Goals
+  1. Gain experience with and understanding of the structure of a OS (UNIX) 
+     command interpreter, and the UNIX process and file APIs. (Required)
+  1. Gain experience writing (optionally with AI assitance) reports 
+     describing the results of a project. (Required)
+  1. Gain experience using AI tools to effectively research and implement 
+     system software features. (Optional but encouraged)
+
 ## Assignment Overview
 Your task is to design and implement a basic UNIX command shell in a provided
-C++ framework with the assistance of AI coding agents. As part of this task, 
-you also have to convince your boss (the class instructor) that:
-  1. You actually understand the key concepts of the problem you're solving.
+C++ framework. You are encouraged to do so with the assistance of (provided) 
+AI agents for both researching the concepts and features you will be 
+implementing and, if you choose, actually implementing those featurs in C++. 
+As part of this task, you also have to convince your boss (the class 
+instructor) that:
+  1. You actually understand the key concepts of the problem you're solving 
+     and are not just the meaty appendage of an AI.
   2. The completed program actually solves the problem generally instead of
-     regurgitating answers to the provided test cases.
+     regurgitating answers to the provided test cases (or illegally changing 
+     the provided test cases!).
 
 The Required Program Features section below lists the features you must
 implement and demonstrate understanding of for full credit.
@@ -25,16 +38,21 @@ For this assignment, you will:
      required to meet with the professor, explain your development process
      and code, and demonstrate that you understand the code to receive credit.
   2. Turn in a written report describing the high-level approach that your 
-     source code uses to provide the key features you implemented (as a LaTeX
-     document in the turned-in GitHub repository - source code in 
+     source code uses to provide the key features you implemented. The LaTeX
+     document must be in the turned-in GitHub repository - source code in 
      [report/report.tex](report/report.tex), which the build system will 
-     compile into report.pdf).
-  3. Take an in-class, closed-book test on how your shell implements these key
-     features.
+     compile into report.pdf). The report PDF itself will also be submitted
+     via Canvas
+  3. Take an in-class, closed-book test on how your shell uses UNIX system 
+     calls and other toops to implement these key features.
 
-*Your final grade on this assignment will be the minimum of your grade on 
-these three components.  Correct code that passes all test cases without
-demonstrated student understanding will receive no credit!*
+The goal of this assignment is for you to *understand* the core system 
+software concepts and their use in implementing key system features, not to 
+merely past program test cases. As such, your final grade on this assignment 
+will be the *minimum* of your grade on these three components.  Correct code 
+that passes all test cases and a report that describes how it does so without
+demonstrated understanding *by you* that you understand these features 
+will receive no credit!*
 
 ## Required Program Features
 
@@ -43,27 +61,15 @@ implement the features described in the included ISH manual page (ish.man.pdf).
 Note that the parser does not yet parse job control or pipelines, but for full 
 credit on the assignment you will need to extend it to do so.
 
-The manual page is the specification. Where this README and the manual page
-disagree, the manual page wins; tell me about the disagreement so I can fix
-the README. The page is reprinted from the course this assignment came from
-originally, so its footer reads `CSc 552` rather than CS587. Ignore that.
+The provided tests in the [classtest](classtest) directory and the manual page 
+specify what you must implement; this README also offers clarifications on key
+features that those documents do not fully specify. If the manual page and this 
+file do not specify a behavior, then the behavior of the `csh` program is what 
+you should strive to emulate.
 
 The classtest/ directory holds the graded test cases, worth 100 points total
 on the `.github/workflows/classtests.yml` autograder, split into the nine
-categories below. Three of those categories bundle two ctest targets under a
-single weight, because `ctest -R` matches test names by substring rather than
-exactly:
-
-  * `ctest -R CornerTests` also runs `resource-leak.sh`
-  * `ctest -R JobControlTests` also runs `job-control-signals.sh`
-  * `ctest -R PipelineTests` also runs `pipeline-signals.sh`
-
-Those three scripts drive `ish` directly instead of going through shelltest,
-because what they check -- leaked file descriptors, zombie children, and the
-delivery of a real SIGTSTP to a job's process group -- cannot be expressed as
-input/output matching. They are graded, and they are worth as much as the
-shelltest cases beside them.
-
+categories below. 
   * Basic Tests - 15 points
     * Correct shell prompt as described in the manual page: the machine's
       hostname, a `%`, and then one space, with no newline. A page of
@@ -147,57 +153,71 @@ shelltest cases beside them.
     * Support all job control features - backgrounding, `jobs`, ^Z/`bg`/`fg`
       - on a pipeline as a single job
 
-A job reference is a `%` followed by a **job number** -- the same number
-`jobs` lists and the `[N]` startup message reports -- so `fg %1`, `bg %2`,
-and `kill %1` all name job 1 and job 2, not processes 1 and 2. The manual
-page's `%1234` example reuses the process ID printed on the line above it,
-which contradicts its own job control paragraph; when the manual page is
-unclear, follow `csh`, and `csh` takes a job number here. The test cases
-assume the job number.
+## Additional Shell Semantics Clarifications.
 
-`cd` with no argument and the `~/.ishrc` startup file both need the user's
-home directory, and the manual page says no environment variables are set for
-`ish` initially -- so `$HOME` is not yours to read. Get the directory from
-`getpwuid(3)`, as `csh` does. The test cases run `ish` with `HOME` pointing
-somewhere else, so a shell that calls `getenv("HOME")` fails them.
+  - A job reference is a `%` followed by a **job number** -- the same number
+    `jobs` lists and the `[N]` startup message reports -- so `fg %1`, `bg %2`,
+    and `kill %1` all name job 1 and job 2, not processes 1 and 2. 
 
-Every diagnostic `ish` prints -- a command it cannot find, a redirection it
-cannot open, a job number that isn't there -- goes to stderr, not stdout. The
-test cases compare the two streams separately, so a shell that reports errors
-on stdout fails them even when the wording is right.
+  - `cd` with no argument and the `~/.ishrc` startup file both need the user's
+    home directory, and the manual page says no environment variables are set 
+    for `ish` initially so you canot read the `$HOME` environment variable. 
+    Instead, get the directory from `getpwuid(3)`, as `csh` does. 
 
-Two of those cases compare the wording byte for byte, so report errors the way
-`csh` does. A failed `execve(2)` with `ENOENT` prints `name: Command not
-found.`, both for a bare name `PATH` could not resolve and for a full path that
-does not exist. A failed `execve(2)` with any other `errno` prints `name: `
-followed by `strerror(errno)`, so a file that exists but is not executable
-prints `Permission denied.` A redirection that cannot be opened prints the
-path, a colon, and `strerror(errno)`. All three end with a period.
+  - Two of those cases compare the wording byte for byte, so report errors the way
+    `csh` does. A failed `execve(2)` with `ENOENT` prints `name: Command not
+    found.`, both for a bare name `PATH` could not resolve and for a full path that
+    does not exist. A failed `execve(2)` with any other `errno` prints `name: `
+    followed by `strerror(errno)`, so a file that exists but is not executable
+    prints `Permission denied.` A redirection that cannot be opened prints the
+    path, a colon, and `strerror(errno)`. All three end with a period.
 
-Several other graded cases compare output against `csh`'s formats, so match
-those too. `alias` with no arguments prints one alias per line as the name, a
-tab, then the value. `setenv` with no arguments prints one variable per line as
-`NAME=value`. `jobs` prints the job number in brackets, then the job's status,
-then the command the job is running, and calls a job stopped by a TSTP signal
-`Stopped`. The report the shell prints when a background job finishes carries
-the same bracketed job number and names the command as well.
+  - Builtins normally run in the main shell and can read and write redirected
+    stdin, sdout, and stderr, but builtins in pipelines or in the background 
+    should run in subshells, separate from the main shell process; this is the 
+    same strategy `csh` uses.
 
-A skipped test category is not a passed one. `ctest` refuses to run some
-categories when your environment cannot support them -- you are root, you have
-no home directory, or you already have a `~/.ishrc` that the startup-file cases
-would otherwise overwrite -- and then reports `100% tests passed` anyway. Read
-`ctest`'s per-test lines rather than its summary, and fix the condition the
-skip message names. The autograder runs the same tests with `CI` set, where
-those conditions fail instead of skipping.
+  - ISH allows only one level of aliasing per the man page ("if an alias uses an
+    alias, the second alias is ignored."). This is different from `csh` which 
+    keeps substituting until nothing changes.
 
-The autograder does not check every feature the manual page specifies. It
-checks the nine categories above. The rest of the manual page is still
-required, is still worth implementing, and is fair game on the in-class code
-test.
+  - The manual page gives no wording for `cd`, `alias`, or `unalias` called with 
+    the wrong number of arguments. Uses `csh`'s error messages (i.e., `cd: Too 
+    many arguments.`, `unalias: Too few arguments.`).
 
-If you are in doubt about the functionality of `ish` or how it should behave in
-a particular situation, model the behavior on that of `csh`.  If you have 
-specific questions about the project, ask in the class Discord.
+  - `kill` does not take a signal number argument (e.g., `kill -9 %1` reads `-9` 
+    as the job referene and reports no such job).
+
+  - `&` is only a terminator of a command, not a seperator between commands.
+
+  - '&' on a lone builtin (e.g. `setenv A B &`) causes it to run in a subshell
+    which discards teh state the builtin changed.
+
+  - Several other graded cases compare output against `csh`'s formats, so match
+    those too. `alias` with no arguments prints one alias per line as the name, a
+    tab, then the value. `setenv` with no arguments prints one variable per line as
+    `NAME=value`. `jobs` prints the job number in brackets, then the job's status,
+    then the command the job is running, and calls a job stopped by a TSTP signal
+    `Stopped`. The report the shell prints when a background job finishes carries
+    the same bracketed job number and names the command as well.
+
+  - A skipped test category is not a passed one. `ctest` refuses to run some
+    categories when your environment cannot support them, e.g. if you are root, 
+    you have no home directory, or you already have a `~/.ishrc` that the 
+    startup-file cases would otherwise overwrite. It then can report `100% tests 
+    passed` incorreectly. Be sure to read `ctest`'s per-test lines rather than 
+    its summary, and fix the condition the skip message names. The autograder 
+    runs the same tests with `CI` set, where those conditions fail instead of 
+    skipping.
+
+  - The autograder does not check every feature the manual page specifies. It
+    checks the nine categories above. The rest of the manual page is still
+    required, is still worth implementing, and is fair game on the in-class code
+    test.
+
+  - If you are in doubt about the functionality of `ish` or how it should behave in
+    a particular situation, model the behavior on that of `csh`.  If you have 
+    specific questions about the project, ask in the class Discord.
 
 ## Program Requirements, Restrictions, Starter Source Code
 
@@ -206,10 +226,10 @@ executable named `ish`. I have provided you this GitHub repository with the
 basic compilation and software engineering infrastructure, most of 
 a C++ parser for the assignment (the [src/](src/) directory), functional
 testcases which will be used to grade the correctness of your program, and
-unit tests for the parser. Note, however, the provided C++ starter code does *not* 
-parse background jobs or pipelines; to complete that portion of the 
-assignment, you will need to (with AI help) add support for parsing job
-control and pipelines to the provided parser.
+unit tests for the parser. Note, however, the provided C++ starter code does 
+*not* parse background jobs or pipelines; to complete that portion of the 
+assignment, you will need to (potentiall with AI help) add support for parsing 
+job control and pipelines to the provided parser.
 
 In terms of the system interfaces and libraries you may and may not use:
   1. You may use general data structures abstractions to help you store, 
@@ -243,33 +263,41 @@ to read (in addition to correct).
 In addition to the source code you must implement, you must also write a report
 providing a high-level overview how you implemented each of the features described 
 above using the UNIX system call interface, how you verified the correctness of 
-these modules so that they don't just pass the functional tests but actually implement the 
-feature generally, and your experience using AI tools to implement these 
-features. You may use AI tools to assist you in editing and revising this 
-report, but *you should provide the draft text, bullet points, or other 
-content* that the AIs help you revise describing your code and how it works. 
-Your report should be a high-level design of the general strategy of each
-major feature that highlights the system interfaces used; it should *not* 
-provided detailed design notes from the AI detail design of the each feature.
-A suggested outline for this report is included in 
-[report/report.tex](report/report.tex).
+these modules so that they don't just pass the functional tests but actually 
+implement the feature generally, and your experience using AI tools and/or 
+available reference information to research and implement these features. 
+Your report should describe a high-level design of the general strategy of each
+major feature that highlights and demonistates understanding of the the system 
+interfaces used for a given feature; it should *not* provided detailed design 
+notes on minor semantic details, for example from the AI detail design of the 
+feature implementation.
+
+You may use AI tools to assist you in editing and revising this report, but *you 
+should provide the draft text* that the AIs help you revise describing your code
+and how it works.  Specifically, I suggest you write the text yourself and then
+have the AI critique your writing versus the writing guidance in 
+[docs/WRITING.md](docs/WRITING.md) A suggested outline for this report is 
+included in the comments in [report/report.tex](report/report.tex).
 
 ## Provided Software Testing Features
-
 Testcases that test correctness of the shell output and of key shell components
 are included in the provided repository. Specifically:
   - Class grading tests on which your shell is graded are specified in the 
     classtest/ directory and are run by the github workflow described in 
     .github/workflows/classtests.yml; these tests are purely functional and 
     work by executing the shell on commit to the main branch. *Do not change 
-    classtests.yml or any of the tests in the classtest/ directory. Changing
-    class testing infrastructure to increase your grade will be handled as
-    academic dishonesty.*
-  - Infrastructure for student tests which are run on commit to the main and 
-    develop branch is provided in the studenttest/ directory and are directed
-    by the workflow specified in .github/workflows/studenttests.yml. I have
-    provided Google Test test cases for the C++ parser already and encourage
-    you to add your own tests to run as you develop your shell. 
+    classtests.yml or any of the tests in the classtest/ directory. You or an AI
+    changing class testing infrastructure to increase your grade will be handled 
+    as academic dishonesty.*
+  - Infrastructure for student tests which are run on commit to the main branch 
+    is provided in the studenttest/ directory and are directed by the workflow 
+    specified in .github/workflows/studenttests.yml. I have provided Google Test 
+    test cases for the C++ parser already and encourage you to add your own tests 
+    to run as you develop your shell.
+  - Be sure to properly protect your main branch so that it is only committed
+    to via pull requests from feature branches, and that you only work on 
+    feature branches. More information on a suggested GitHub workflow
+    can be found in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## Assignment download and submission
 
@@ -290,7 +318,6 @@ Two things about forks will bite you if you don't know about them:
      yours if you want it.
 
 ## Computer Development Environments
-
 You should ensure that you have a high-quality environment for authoring, 
 compiling, and running your program. You may use the development environment
 of your choice to do so, though I provide some advice on what to look for
@@ -301,13 +328,23 @@ development environments and a general software engineering workflow
 can be found in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ## AI Coding Tools, Environments, and Workflow
-You are *expected* to use AI coding tools to complete this assignment.
+You are expected (but not required) to use AI coding tools to complete this 
+assignment; however, the goal is for you to understand the system interfaces
+and the structure of a command interpreter, not simply to pass test cases.
+As such, I suggest that any use you make of AI tools be *highly* intereactive, 
+where you are working with the AI to find references on how to implement features
+that you read, compare those references versus the design the AI proposes and 
+any test cases for a feature, and spot-check the implementation and test cases
+to make sure it actually does what needs to be done. *If you use AI tools 
+simply as a way to pass test cases without understanding how and why things
+work, you will not pass this assignment*.
+
 It is feasible to manually complete this assignment in the provided 
 time, but one of the goals of this assignment is to ensure you are comfortable 
-using modern AI software engineering tools. That is because later in the 
-semester we will use those tools to implement, evaluate, and analyze modern 
-systems techniques that will *not* be feasible to code by hand in the 
-provided time.
+using modern AI software engineering tools. Later in the semester we will use 
+those tools to implement, evaluate, and analyze modern systems techniques; the
+use of AI tools will allow us to be much more aggressive in the system
+software techniques we are able to do in these projects.
 
 See [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) for the AI coding harnesses, MCP
 services, sandboxing options, model guidance, and a suggested development
@@ -334,18 +371,12 @@ everyone else on the machine very unhappy. _Be careful about this._
 A few final bits of advice:
   1. First, and most importantly, get started early; you almost certainly have a
      lot to learn about AI workflows, GitHub software engineering workflows, and
-     UNIX process management, before you can start implementing anything.
+     UNIX process management before you can start implementing anything.
   1. Second, once you have a good understanding of what you are being asked to 
-     do, work _one feature at a time in a separate feature branch of `develop`_
-     in collaboration with the provided AI models to design, create test cases 
+     do, work *one feature at a time in a separate feature branch* in 
+     collaboration with the provided AI models to design, create test cases 
      for, implement, and document (in [report/report.tex](report/report.tex)) 
      those features.
-  1. Use pull requests to merge individual features to the develop branch as 
+  1. Use pull requests to merge individual features to the main branch as 
      they are completed, paying attention to previous test cases to make sure 
-     they don't break as you develop new features.
-  1. As developed features are completed and documented, periodically use pull 
-     requests to merge features to `main` and ensure that the class tests are 
-     also making progress. While having separate `main` and `develop` branches 
-     is not necessary on a project of this scale, it is good practice to get 
-     into in preparation for the larger projects you will be working on later 
-     this semester.
+     they don't break as you implement new features.

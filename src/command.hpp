@@ -24,17 +24,15 @@ struct redirection {
 class command {
     std::string name;
     std::vector<std::string> arguments;
-    bool isForeground;
     std::vector<struct redirection> redirections;
   
 public:
     command( std::string n ) 
-        :name(n), isForeground(true) {
+        :name(n) {
         arguments = std::vector<std::string>();
     }
 
-    command( ) 
-        :isForeground(true) {
+    command( ) {
     }
 
     void registerArgument(std::string arg) {
@@ -45,13 +43,6 @@ public:
         struct redirection r(type, path);
         redirections.push_back(r);
     }
-    void setBackground() {
-        isForeground = false;
-    }
-    void setForeground() {
-        isForeground = true;
-    }
-    bool getForeground() const { return isForeground; }
     std::string getName() const { return name; }
     std::vector<struct redirection> getRedirections() const { return redirections; }
     std::vector<std::string> getArguments() const { return arguments; }
