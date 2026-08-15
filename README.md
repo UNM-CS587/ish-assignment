@@ -21,7 +21,7 @@ As part of this task, you also have to convince your boss (the class
 instructor) that:
   1. You actually understand the key concepts of the problem you're solving 
      and are not just the meaty appendage of an AI.
-  2. The completed program actually solves the problem generally instead of
+  1. The completed program actually solves the problem generally instead of
      regurgitating answers to the provided test cases (or illegally changing 
      the provided test cases!).
 
@@ -50,8 +50,9 @@ The goal of this assignment is for you to *understand* the core system
 software concepts and their use in implementing key system features, not to 
 merely pass program test cases. As such, your final grade on this assignment 
 will be the *minimum* of your grade on these three components. *Correct code 
-that passes all test cases, and a report that describes how it does so, will 
-receive no credit without demonstrated understanding by you.*
+that passes all test cases and a report that describes how it does so will 
+receive no credit without demonstrated understanding by you on the in-class 
+exam.*
 
 ## Required Program Features
 
@@ -68,6 +69,8 @@ settles a question, emulate `csh`, and tell me about the gap so I can fix this
 file. Note also that the manual page is reprinted from the course this 
 assignment came from originally, so its footer reads `CSc 552` rather than 
 CS587; ignore that.
+
+### Test Case Details
 
 The classtest/ directory holds the graded test cases, worth 100 points total
 on the `.github/workflows/classtests.yml` autograder, split into the nine
@@ -173,14 +176,21 @@ category names alone.
     * Support all job control features - backgrounding, `jobs`, ^Z/`bg`/`fg`
       - on a pipeline as a single job
 
-## Additional Shell Semantics Clarifications
+### Additional Shell Semantics Clarifications
+
+Below are additional semantics clarifications for the shell where the 
+test case and manual page documentation are unclear. Note that I exposed 
+these ambiguities by implementing the shell myself in collaboration with an
+AI. This kind of collaboration is what is requierd to use these tools well,
+and enable AI coding to be effective.
 
   - A job reference is a `%` followed by a **job number** -- the same number
     `jobs` lists and the `[N]` startup message reports -- so `fg %1`, `bg %2`,
     and `kill %1` all name job 1 and job 2, not processes 1 and 2. The manual
-    page's `%1234` example reuses the process ID printed on the line above it
-    and so contradicts its own job control paragraph; ignore the example. 
-    `csh` takes a job number here, and so do the test cases.
+    page's `%1234` example happens to use `1234` as the job number, which 
+    only coincidentally matches the process ID printed on the line above it. 
+    Use the job number, not the process ID, as the argument to 
+    `fg`, `bg`, and `kill` builtins.
 
   - `cd` with no argument and the `~/.ishrc` startup file both need the user's
     home directory, and the manual page says no environment variables are set 
@@ -209,18 +219,18 @@ category names alone.
     second command on the line.
 
   - `ish` allows only one level of aliasing per the man page ("if an alias uses 
-    an alias, the second alias is ignored."). This too differs from `csh`, which 
-    keeps substituting until nothing changes: after `alias a /bin/echo` and 
-    `alias b a`, the command `b hi` prints `hi` under `csh` and reports 
+    an alias, the second alias is ignored."). This too differs from `csh`, 
+    which keeps substituting until nothing changes: after `alias a /bin/echo` 
+    and `alias b a`, the command `b hi` prints `hi` under `csh` and reports 
     `a: Command not found.` under `ish`.
 
-  - The manual page gives no wording for `cd`, `alias`, or `unalias` called with 
+  - The manual page gives no wording for `cd`, `alias`, or `unalias` called with
     the wrong number of arguments. No graded case checks these, and any 
-    reasonable diagnostic on stderr is acceptable. `csh`'s wording (`cd: Too 
-    many arguments.`, `unalias: Too few arguments.`) is a safe choice, and it 
-    matches the wording the manual page does give for `setenv`.
+    reasonable diagnostic on stderr is acceptable. `csh`'s wording (e.g., 
+    `cd: Too many arguments.`, `unalias: Too few arguments.`) is a safe choice,
+    and it matches the wording the manual page gives for `setenv`.
 
-  - `kill` does not take a signal number argument (e.g., `kill -9 %1` reads `-9` 
+  - `kill` does not take a signal number argument (e.g., `kill -9 %1` reads `-9`
     as the job reference and reports no such job).
 
   - `&` terminates a command; it does not separate commands the way `;` does. 
@@ -231,32 +241,33 @@ category names alone.
     which discards the state the builtin changed.
 
   - Several other graded cases compare output against `csh`'s formats, so match
-    those too. `alias` with no arguments prints one alias per line as the name, a
-    tab, then the value. `setenv` with no arguments prints one variable per line as
-    `NAME=value`. `jobs` prints the job number in brackets, then the job's status,
-    then the command the job is running, and calls a job stopped by a TSTP signal
-    `Stopped`. The report the shell prints when a background job finishes carries
-    the same bracketed job number and names the command as well.
+    those too. `alias` with no arguments prints one alias per line as the name, 
+    a tab, then the value. `setenv` with no arguments prints one variable per 
+    line as `NAME=value`. `jobs` prints the job number in brackets, then the 
+    job's status, then the command the job is running, and calls a job stopped 
+    by a TSTP signal `Stopped`. The report the shell prints when a background 
+    job finishes carries the same bracketed job number and names the command 
+    as well.
 
   - A skipped test category is not a passed one. `ctest` refuses to run some
     categories when your environment cannot support them, e.g. if you are root, 
     you have no home directory, or you already have a `~/.ishrc` that the 
-    startup-file cases would otherwise overwrite. It then can report `100% tests 
-    passed` incorrectly. Be sure to read `ctest`'s per-test lines rather than 
-    its summary, and fix the condition the skip message names. The autograder 
-    runs the same tests with `CI` set, where those conditions fail instead of 
-    skipping.
+    startup-file cases would otherwise overwrite. It then can report `100% 
+    tests passed` incorrectly. Be sure to read `ctest`'s per-test lines rather 
+    than its summary, and fix the condition the skip message names. The 
+    autograder runs the same tests with `CI` set, where those conditions fail 
+    instead of skipping.
 
   - The autograder does not check every feature the manual page specifies. It
     checks the nine categories above. The rest of the manual page is still
     required, is still worth implementing, and is fair game on the in-class code
     test.
 
-  - If you are in doubt about the functionality of `ish` or how it should behave in
-    a particular situation, model the behavior on that of `csh`.  If you have 
+  - If you are in doubt about the functionality of `ish` or how it should behave
+    in a particular situation, model the behavior on that of `csh`.  If you have
     specific questions about the project, ask in the class Discord.
 
-## Program Requirements, Restrictions, Starter Source Code
+### Program Requirements, Restrictions, Starter Source Code
 
 Your shell will be written in C++, compile using cmake, and produce an 
 executable named `ish`. I have provided you this GitHub repository with the
@@ -298,18 +309,18 @@ to read (in addition to correct).
 
 ## Required Report 
 In addition to the source code you must implement, you must also write a report
-providing a high-level overview how you implemented each of the features described 
-above using the UNIX system call interface, how you verified the correctness of 
-these modules so that they don't just pass the functional tests but actually 
-implement the feature generally, and your experience using AI tools and/or 
-available reference information to research and implement these features. 
-Your report should describe a high-level design of the general strategy of each
-major feature that highlights and demonstrates understanding of the system 
-interfaces used for a given feature; it should *not* provide detailed design 
-notes on minor semantic details, for example from the AI detail design of the 
-feature implementation.
+providing a high-level overview how you implemented each of the features 
+described above using the UNIX system call interface, how you verified the 
+correctness of these modules so that they don't just pass the functional tests 
+but actually implement the feature generally, and your experience using AI tools
+and/or available reference information to research and implement these 
+features. Your report should describe a high-level design of the general 
+strategy of each major feature that highlights and demonstrates understanding of
+the system interfaces used for a given feature; it should *not* provide detailed
+design notes on minor semantic details, for example from the AI detail design of
+the feature implementation.
 
-You may use AI tools to assist you in editing and revising this report, but *you 
+You may use AI tools to assist you in editing and revising this report, but *you
 should provide the draft text* that the AIs help you revise describing your code
 and how it works.  Specifically, I suggest you write the text yourself and then
 have the AI critique your writing versus the writing guidance in 
@@ -324,13 +335,13 @@ are included in the provided repository. Specifically:
     .github/workflows/classtests.yml; these tests are purely functional and 
     work by executing the shell on commit to the main branch. *Do not change 
     classtests.yml or any of the tests in the classtest/ directory. You or an AI
-    changing class testing infrastructure to increase your grade will be handled 
+    changing class testing infrastructure to increase your grade will be handled
     as academic dishonesty.*
   - Infrastructure for student tests which are run on commit to the main branch 
     is provided in the studenttest/ directory and are directed by the workflow 
-    specified in .github/workflows/studenttests.yml. I have provided Google Test 
-    test cases for the C++ parser already and encourage you to add your own tests 
-    to run as you develop your shell.
+    specified in .github/workflows/studenttests.yml. I have provided Google Test
+    test cases for the C++ parser already and encourage you to add your own 
+    tests to run as you develop your shell.
   - Be sure to properly protect your main branch so that it is only committed
     to via pull requests from feature branches, and that you only work on 
     feature branches. More information on a suggested GitHub workflow
