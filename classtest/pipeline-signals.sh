@@ -4,7 +4,14 @@
 # features on pipelines" requirement in the README. See
 # job-control-signals.sh for why this needs a real signal instead of a
 # shelltest < block, and for the FIFO-driving approach used here.
+#
+# set -m matters as much as set -u here. bash does not enable job control in a
+# script, so without it ish stays in this script's process group, and the
+# `kill -TSTP "-$PGID"` below names that group and stops the test itself --
+# which ctest then reports only after waiting out the full TIMEOUT. With it,
+# ish gets a process group of its own and the checks fail in seconds.
 set -u
+set -m
 
 ISH="$1"
 
@@ -19,6 +26,9 @@ mkfifo "$FIFO"
 
 cleanup() {
   exec 3>&- 2>/dev/null
+  # A stopped ish does not die from the TERM below, and the wait then blocks
+  # forever. Continue it first so the signal can be delivered.
+  kill -CONT "$ISH_PID" 2>/dev/null
   kill "$ISH_PID" 2>/dev/null
   wait "$ISH_PID" 2>/dev/null
   rm -rf "$WORKDIR"

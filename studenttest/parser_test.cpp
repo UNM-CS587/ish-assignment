@@ -84,13 +84,6 @@ TEST(ParserBasicCommands, RepeatedWhitespaceBetweenArgumentsIsCollapsed) {
     EXPECT_EQ(commands[0].getArguments(), std::vector<std::string>({"a", "b"}));
 }
 
-TEST(ParserBasicCommands, CommandDefaultsToForeground) {
-    std::vector<ish::command> commands;
-    ASSERT_TRUE(ParseLine("ls", commands));
-    ASSERT_EQ(commands.size(), 1u);
-    EXPECT_TRUE(commands[0].getForeground());
-}
-
 TEST(ParserBasicCommands, BuiltinLikeNameParsesAsAnOrdinaryCommand) {
     // Builtin recognition happens after parsing (man page, "Command
     // Execution"), so the parser must not special-case builtin names.

@@ -35,7 +35,6 @@ std::ostream& operator<<(std::ostream& out, const ish::command& cmd)
         out << redir.path << "\n";
     }
 
-    if (!cmd.getForeground()) out << "  Background Job\n";
     out << "]";
     return out;
 }
