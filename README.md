@@ -1,8 +1,11 @@
 # CS587 - Advanced Operating Systems Project 1: The `ish` shell
 
-## Due Date
-  * Repository Link and Report Due Date: Friday, September 11, 2026, 11:59pm
-  * Repository Grading Due Date: Saturday, September 12, 2026, 12:00pm
+## Due Dates
+  * GitHub ID: Wednesday, August 19, 2026, 9:00am. I create your repository
+    from this ID, so you cannot start the assignment until you submit it.
+  * Code and Report PDF: Friday, September 11, 2026, 11:59pm. Your write
+    access to the repository ends then, and the code on `main` at that
+    moment is what I grade.
   * In-class Test: Monday, September 14, 2026, 9:00am
 
 ## Assignment Goals
@@ -30,20 +33,22 @@ The Required Program Features section below lists the features you must
 implement and demonstrate understanding of for full credit.
 
 For this assignment, you will:
-  1. Turn in the URL of your GitHub repository that includes all of your source
-     code, test cases, and revision history. This revision history should 
+  1. Turn in your GitHub ID through its own Canvas assignment by the first
+     date above, at which point I will create the private repository in the
+     class GitHub organization that you will work in and that I will grade.
+     That repository must hold all of your source code, test cases, and
+     revision history. This revision history should 
      document your development process as you incrementally add features to
      the shell.  If you submit a repository with minimal revision history (e.g. 
      a single commit to the main branch that implements all features), you will
      be required to meet with the professor, explain your development process
      and code, and demonstrate that you understand the code to receive credit.
-     The repository link is due via Canvas at the time given above and will be
-     graded based on its contents at a slightly later time also given above.
   2. Turn in a written report describing the high-level approach that your 
      source code uses to provide the key features you implemented. The LaTeX
      source must be in the turned-in GitHub repository in 
      [report/report.tex](report/report.tex). You will also submit the report 
-     PDF via Canvas by the date and time listed above.
+     PDF through a second Canvas assignment by the second date above, which
+     is the same deadline your code is graded at.
   3. Take an in-class, closed-book test on how your shell uses UNIX system 
      calls and other tools to implement these key features at the date and time
      listed above.
@@ -252,10 +257,10 @@ shell components in the provided repository. Specifically:
     specified in .github/workflows/studenttests.yml. I have provided Google Test
     test cases for the C++ parser already and encourage you to add your own 
     tests to run as you develop your shell.
-  - Be sure to properly protect your main branch so that it is only committed
-    to via pull requests from feature branches, and that you only work on 
-    feature branches. More information on a suggested GitHub workflow
-    can be found in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+  - Your `main` branch is already protected so that it is only committed to
+    via pull requests from feature branches; work only on feature branches.
+    More information on a suggested GitHub workflow can be found in 
+    [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## Required Report 
 
@@ -309,21 +314,26 @@ features in the test cases.
 ## Additional Assignment Details
 
 ### Assignment download and submission
-You will fork the main assignment repository provided by the class instructor
-for the class *in the class GitHub organization*. The class instructor will 
-then snapshot and grade your repository at the repository grading due date 
-listed above. Only your `main` GitHub branch will be graded. You must ensure 
-that your completed work is on this branch!  Be sure to commit and push all of 
-your changes to the `main` branch on your repository prior to that time!
+Submit your GitHub ID through its Canvas assignment by 9:00am on Wednesday,
+August 19. I will create a private repository named `ish-<your-github-id>`
+for you in the class GitHub organization and give you write access to it.
+GitHub will mail you invitations to the organization, the students team, and
+the repository; accept them, then clone the repository and work there. It
+arrives with the starter code, the test cases, the test workflows enabled,
+and `main` protected as [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) describes.
+Tell me if the invitations do not show up.
 
-Two things about forks will bite you if you don't know about them:
-  1. GitHub disables Actions on a new fork. Open the Actions tab on your fork
-     and enable workflows, or nothing will run and you will get no test
-     feedback at all.
-  1. Branch protection is a repository setting, not a file, so none of the
-     protection on the instructor's repository travels with your fork. See
-     [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for how to recreate it on
-     yours if you want it.
+At 11:59pm on Friday, September 11 your write access drops to read access,
+and I grade what is on `main` at that point. Only your `main` GitHub branch
+will be graded. You must ensure that your completed work is on this branch!
+Be sure to commit and push all of your changes to the `main` branch on your
+repository prior to that time! Work left on a feature branch, or in a pull
+request you never merged, does not count, and a pull request still has to
+finish its test run before it can merge, so leave yourself margin.
+
+Because the repository is private and inside the class organization, you also
+get GitHub Codespaces on it, billed to the class rather than to you. See
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for how to use them.
 
 ### Computer Development Environments
 You should ensure that you have a high-quality environment for authoring, 
@@ -418,8 +428,8 @@ Students.
 ## Late Submission Policy
 The assignment will not be accepted late without prior arrangement with the 
 class instructor or documented extraordinary circumstances outside the control
-of the student. The state of your repository at the repository grading due date
-listed above is what will be used to determine your grade.
+of the student. The state of your repository when your write access ends is
+what will be used to determine your grade.
 
 ## Additional Advice
 To implement `ish`, you will be creating a process that forks off other 

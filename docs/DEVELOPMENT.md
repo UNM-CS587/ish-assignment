@@ -58,6 +58,46 @@ WSL2. If using homebrew, you'll want the following packages:
   - texlive
   - googletest
 
+### GitHub Codespaces
+
+A Codespace is a Linux container that GitHub runs for you, reachable from a
+browser or from a local VS Code or JetBrains IDE attached to it. Your
+assignment repository lives in the class organization, so Codespaces are
+available on it and billed to the class rather than to you. This is the
+quickest way to get a working environment, and it is a useful fallback when
+something breaks in your local one the night before the deadline.
+
+The repository ships a `.devcontainer/devcontainer.json` that starts from
+Microsoft's C++ image and installs Boost, shelltestrunner, Google Test, and
+LaTeX. Codespaces reads that file, so `cmake` and `ctest` work with nothing
+for you to install. To start one, open your repository on GitHub, click
+**Code**, choose the **Codespaces** tab, and create a Codespace on the branch
+you want to work on. The first one takes a few minutes while the packages
+install; later ones start from a cached image and are much faster. From
+there, follow the build and test instructions below unchanged.
+
+The Codespace terminal is a real pseudo-terminal, so `ish` sees a terminal on
+stdin and interactive job control behaves as it does locally: ^Z stops the
+foreground job, and `fg` and `bg` resume it.
+
+Three things to watch:
+  * **Your work only survives if you push it.** The container's disk belongs
+    to the Codespace. Deleting the Codespace deletes anything you have not
+    committed and pushed.
+  * **Codespaces cost core-hours, even idle ones.** A Codespace stops on its
+    own after 30 minutes of inactivity but keeps consuming storage until you
+    delete it. Stop or delete Codespaces you are done with, and watch your
+    usage under your GitHub account's Settings > Billing.
+  * **Keep credentials out of the repository.** If you run an AI coding
+    harness inside the Codespace, put its API key in a Codespaces secret
+    (your account Settings > Codespaces > Secrets), which arrives as an
+    environment variable, rather than committing it.
+
+Running an agent inside a Codespace also gives you the isolation
+[docs/AI_WORKFLOW.md](AI_WORKFLOW.md) recommends: the container holds a clone
+of one repository and nothing else of yours, so a misdirected command cannot
+reach the rest of your files.
+
 ## Compiling the shell in the development environment
 
 This project builds out of source, into a `build/` directory that `.gitignore`
@@ -137,16 +177,19 @@ be working as a single developer implementing features sequentially.
 The three-tier version is helpful when multiple developers are 
 developing features on several feature branches at the same time.
 
-To support this, the `main` branch in the instructor's repository is 
-protected so that:
+Your repository arrives with this workflow enforced. A ruleset named
+`Student Test Check`, which you can read under Settings > Rules > Rulesets,
+protects `main` so that:
   * Commits cannot be pushed to it directly; all changes arrive through a
     pull request.
   * The GitHub Actions workflow `.github/workflows/studenttests.yml` must
     pass before a pull request can be merged to `main`.
+  * The pull request branch must be current with `main` before it merges, so
+    merge `main` into your feature branch when `main` has moved ahead.
+  * `main` cannot be deleted or force-pushed.
 
-Branch protection lives in the repository's settings rather than in its
-files, so **your fork does not inherit any of it.** If you want the same
-safety net on your own repository, recreate it under Settings > Rules >
-Rulesets: target `main`, require a pull request before merging with zero 
-required approvals (you cannot approve your own), and require the 
-`run-student-tests` status check.
+A pull request needs no approvals, since you cannot approve your own; you
+open it, wait for the check, and merge it yourself. If a pull request sits
+unmergeable and you cannot tell why, read the check's log under the Actions
+tab rather than working around the ruleset. Ask the instructor if you need it
+changed.
