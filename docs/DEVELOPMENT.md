@@ -58,10 +58,15 @@ WSL2. If using homebrew, you'll want the following packages:
   - texlive
   - googletest
 
+## Compiling the shell in the development environment
+
+[AI to provide simple directions on how to use cmake/make to build the shell
+and report in a build/ directory in the repository]
+
 ## GitHub Software Engineering Workflow
 
-Use a two-tier branching model: `main`, and short-lived feature
-branches cut from `main` (e.g. `feature/pipeline-parsing`).
+I recommend you use a two-tier branching model: `main`, and short-lived feature
+branches derived from `main` (e.g. `feature/pipeline-parsing`).
   * `main` holds only tested, working code. The class instructor grades
     this branch, so nothing incomplete or broken belongs here.
   * Feature branches (e.g. `feature/pipeline-parsing`, `feature/job-control`)
