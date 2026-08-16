@@ -60,8 +60,63 @@ WSL2. If using homebrew, you'll want the following packages:
 
 ## Compiling the shell in the development environment
 
-[AI to provide simple directions on how to use cmake/make to build the shell
-and report in a build/ directory in the repository]
+This project builds out of source, into a `build/` directory that `.gitignore`
+already excludes. Configure once, from the top of the repository:
+
+```
+cmake -B build
+```
+
+Then build after every change:
+
+```
+cmake --build build
+```
+
+That produces the shell at `build/src/ish` and the parser unit tests at
+`build/studenttest/parser_test`. Run the shell by hand to try it:
+
+```
+./build/src/ish
+```
+
+The starter shell parses a command line and prints the `command` structure the
+parser produced; it executes nothing. Expect that output until you write the
+execution code. If you add a source file, re-run `cmake -B build` so CMake
+picks it up.
+
+### Running the test cases
+
+`ctest` runs the graded class tests and the student tests together:
+
+```
+ctest --test-dir build
+```
+
+Add `--output-on-failure` to see what a failing case produced, and `-R` to run
+one category while you work on it:
+
+```
+ctest --test-dir build -R RedirectionTests --output-on-failure
+```
+
+Read the per-test lines rather than the summary. A category `ctest` cannot run
+in your environment reports as skipped and still leaves the summary reading
+`100% tests passed`; the README lists the conditions that cause this.
+
+### Building the report
+
+The report is a separate target rather than part of the default build, so a
+LaTeX error cannot break the build the test cases depend on:
+
+```
+cmake --build build --target generate_pdf
+```
+
+The PDF lands at `build/report/report.pdf`. That is the file you submit to
+Canvas. CMake only defines this target if it found `latexmk` when you
+configured, and it says so in the configure output when it did not; install a
+TeX distribution and re-run `cmake -B build` to get the target back.
 
 ## GitHub Software Engineering Workflow
 

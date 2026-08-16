@@ -54,7 +54,7 @@ merely pass program test cases. As such, your final grade on this assignment
 will be the *minimum* of your grade on these three components. *Correct code 
 that passes all test cases and a report that describes how it does so will 
 receive no credit without demonstrated understanding by you on the in-class 
-exam.*
+test.*
 
 ## Required Program Features
 
@@ -72,6 +72,10 @@ settles a question, emulate `csh`, and tell me about the gap so I can fix this
 file. Note also that the manual page is reprinted from the course this 
 assignment came from originally, so its footer reads `CSc 552` rather than 
 CS587; ignore that.
+
+Those clarifications are collected in the 
+[appendix](#appendix-additional-shell-semantics-clarifications) at the end of 
+this file. Several graded categories turn on them, so read it before you start.
 
 ### Test Case Details
 
@@ -187,17 +191,18 @@ executable named `ish`. I have provided you this GitHub repository with
   1. Most of a C++ parser for the assignment ([src/parser.hpp](src/parser.hpp)),
   1. A basic command data structure that represents the state of a parsed 
      command ([src/command.cpp](src/command.cpp)),
-  1. A simple read/print loop ([src/ish.cpp](srcs/ish.cpp)) that demonstrates
+  1. A simple read/print loop ([src/ish.cpp](src/ish.cpp)) that demonstrates
      the use of the parser and command structure,
   1. Testcases which will be used to grade the correctness of your program
      ([classtest/](classtest/)), and
   1. Additional correctness testcases and infrastructure not used for grading
-     but helpful for ongoing continuous integratoin and pull request testing
+     but helpful for ongoing continuous integration and pull request testing
      ([studenttest/](studenttest)). 
 
-Note that the the provided C++ starter code does *not* parse background jobs 
-or pipelines; to complete that portion of the assignment, you will need to (potentially with AI help) add support for parsing 
-job control and pipelines to the provided parser.
+Note that the provided C++ starter code does *not* parse background jobs 
+or pipelines; to complete that portion of the assignment, you will need to 
+(potentially with AI help) add support for parsing job control and pipelines 
+to the provided parser.
 
 In terms of the system interfaces and libraries you may and may not use:
   1. You may use general data structures abstractions to help you store, 
@@ -220,8 +225,8 @@ In terms of the system interfaces and libraries you may and may not use:
      implement; the ban is on the C library routines, not on the builtins.
   1. You must cite any library you use outside of the standard C and C++ 
      libraries, including any Boost libraries you use besides the Boost
-     Spirit X3 Parser already used. As a general guideline, not external
-     library you use may not, in the judgement of hte instructor, trivialize 
+     Spirit X3 Parser already used. As a general guideline, no external
+     library you use may, in the judgment of the instructor, trivialize 
      any of the learning goals of the assignment. I strongly recommend that you
      ask explicit permission for any external source code you plan to use 
      in your implementation.
@@ -289,26 +294,27 @@ Grading on the written report will be as follows:
   * Discussion of External References/AI Usage: 15%
 
 ## In-Class Test
-The in-class exam on shell concepts will a written paper exam consisting of 
-short-answer questions. These questions will quiz your understanding of the 
-basic strategy for implementing each of the features described in the 
-requiremets sections and in your report. The primary focus of these questions
-will be on the (1) system calls used in your shell, (2) what those systems calls
-do, and (3) how they were used to implement different features in your shell.
-The quiz may also include questions on general shell structure and strategy 
-(e.g. alias and enviornment handling, error handling, etc.). The breakdown of 
-points on the in-class exam will correspond roughly though not necessarily
-exactly with the breakdown of points between shell features in the test cases.
+The in-class test on shell concepts will be a written, closed-book paper test 
+consisting of short-answer questions. These questions will quiz your 
+understanding of the basic strategy for implementing each of the features 
+described in the requirements sections and in your report. The primary focus of 
+these questions will be on the (1) system calls used in your shell, (2) what 
+those system calls do, and (3) how they were used to implement different 
+features in your shell. The test may also include questions on general shell 
+structure and strategy (e.g. alias and environment handling, error handling, 
+etc.). The breakdown of points on the in-class test will correspond roughly 
+though not necessarily exactly with the breakdown of points between shell 
+features in the test cases.
 
 ## Additional Assignment Details
 
 ### Assignment download and submission
 You will fork the main assignment repository provided by the class instructor
 for the class *in the class GitHub organization*. The class instructor will 
-then snapshot and grade your repository at the due time. Only your `main`
-GitHub branch will be graded. You must ensure that your completed work is on
-this branch!  Be sure to commit and push all of your changes to the `main`
-branch on your repository prior to the due date!
+then snapshot and grade your repository at the repository grading due date 
+listed above. Only your `main` GitHub branch will be graded. You must ensure 
+that your completed work is on this branch!  Be sure to commit and push all of 
+your changes to the `main` branch on your repository prior to that time!
 
 Two things about forks will bite you if you don't know about them:
   1. GitHub disables Actions on a new fork. Open the Actions tab on your fork
@@ -365,19 +371,20 @@ available online for free through the UNM library.
 ## Use of External Sources and Academic Honesty
 
 As a general principle, you may read and use existing publicly-available 
-information as long as that use (1) is clearly docimented and cited, (2) all
+information as long as that use (1) is clearly documented and cited, (2) all
 code and documentation you write either directly or with the assistance of an
-AI is your own intellectual work, and (3) any used information aligns with the learning goals of the assignment and will not trivialize any of the learning 
-goals of the assignments as described above. If in doubt, *ask*!
+AI is your own intellectual work, and (3) any used information aligns with the 
+learning goals of the assignment and will not trivialize any of those goals as 
+described above. If in doubt, *ask*!
 
 As specific examples:
   - You may use AI tools to aid you in implementing `ish`, but all such work 
     must be carefully documented, include specific efforts to ensure that you 
-    understand and are guiding the the coding of these features. This effort
+    understand and are guiding the coding of these features. This effort
     must be thoroughly documented in both your commit history and in your 
     written report. 
 
-  - You may *read* other refeences materals such as books on UNIX 
+  - You may *read* other reference materials such as books on UNIX 
     process and file interfaces, public shell implementations, and best 
     practices for using AI tools to more effectively meet the goals of the 
     assignment.  Any such usage must be specifically documented in your source 
@@ -389,7 +396,7 @@ As specific examples:
     to UNIX shell implementation*.
 
   - You may *not* use any code from publicly available shell implementations in
-    you implementation, either directly or by laundering them through an AI 
+    your implementation, either directly or by laundering them through an AI 
     (e.g., you may not prompt an AI with "Integrate the code implementing 
     feature XYZ on [linked web page] into the shell implementation".)
 
@@ -405,14 +412,14 @@ As specific examples:
     the same as explicitly providing that material to another student.
 
 Violating any of these will be considered and reported as academic dishonesty, 
-result in a grade of 0 in the class, and will be repoorted to the Dean of 
+result in a grade of 0 in the class, and will be reported to the Dean of 
 Students.
 
 ## Late Submission Policy
 The assignment will not be accepted late without prior arrangement with the 
 class instructor or documented extraordinary circumstances outside the control
-of the student. The state of your repository at the time it is due is what will
-be used to determine your grade.
+of the student. The state of your repository at the repository grading due date
+listed above is what will be used to determine your grade.
 
 ## Additional Advice
 To implement `ish`, you will be creating a process that forks off other 
@@ -517,7 +524,7 @@ to make AI coding effective.
 
   - The autograder does not check every feature the manual page specifies. It
     checks the nine categories above. The rest of the manual page is still
-    required, is still worth implementing, and is fair game on the in-class code
+    required, is still worth implementing, and is fair game on the in-class
     test.
 
   - If you are in doubt about the functionality of `ish` or how it should behave
