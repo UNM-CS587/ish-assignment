@@ -3,10 +3,10 @@
 ## Due Dates
   * GitHub ID: Wednesday, August 19, 2026, 9:00am. I create your repository
     from this ID, so you cannot start the assignment until you submit it.
-  * Code and Report PDF: Friday, September 11, 2026, 11:59pm. Your write
+  * Code and Report PDF: Wednesday, September 16, 2026, 11:59pm. Your write
     access to the repository ends then, and the code on `main` at that
     moment is what I grade.
-  * In-class Test: Monday, September 14, 2026, 9:00am
+  * In-class Test: Friday, September 18, 2026, 9:00am
 
 ## Assignment Goals
   1. Gain experience with and understanding of the structure of an OS (UNIX) 
