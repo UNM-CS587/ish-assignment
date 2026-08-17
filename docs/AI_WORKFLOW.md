@@ -13,15 +13,21 @@ pick one and learn it well rather than switching between several.
     native installer described at https://code.claude.com/docs/en/setup,
     or with Homebrew (`brew install --cask claude-code`) on MacOS or
     Linuxbrew.
-  * **Codex CLI** (OpenAI) - a terminal-based agent. Install with
-    `npm install -g @openai/codex` (requires Node.js 18+, available via
-    `apt install nodejs npm` on Ubuntu or `brew install node`) or with
-    `brew install --cask codex`. Documentation and source are at
-    https://github.com/openai/codex.
+  * **OpenCode** - An open-source coding agent that works with a wide
+    range of models and interfaces. You can get documentation and download
+    it from the [OpenCode Website](https://opencode.ai).
   * **Cline** - a VS Code extension. Install it from the VS Code
     Extensions panel (search "Cline") or from the Marketplace at
     https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev.
     Documentation is at https://docs.cline.bot.
+  * **Codex CLI** (OpenAI) - [SEE WARNING BELOW] a terminal-based agent from 
+    OpenAI. Install with `npm install -g @openai/codex` (requires Node.js 18+, 
+    available via `apt install nodejs npm` on Ubuntu or `brew install node`) 
+    or with `brew install --cask codex`. Documentation and source are at
+    https://github.com/openai/codex. **WARNING**: Codex no longer works with
+    many Lite LLM gateways, including the AI Verde endpoint we are using in 
+    this class. If you want to use it, please contact me and I will work 
+    with you to get you the endpoint configuration.
 
 ### AI MCP Agents
 Model Context Protocol (MCP) services provide additional features that allow
@@ -82,11 +88,11 @@ Potential sandboxing solutions include:
 
 ## AI Model Availability
 
-The class provides an LLM Lite gateway though the University of Arizona-hosted 
-[AI Verde](chat.cyverse.ai) system for you to use to access a variety of AI models.
+The class provides an LLM Lite gateway through the University of Arizona-hosted 
+[AI Verde](https://chat.cyverse.ai) system for you to use to access a variety of AI models.
 This includes:
   1. Unlimited access to state-of-the-art open models hosted on the NSF-funded
-  [National Research Platform](www.nrp.ai) and [Jetstream 2](jetstream-cloud.org)
+  [National Research Platform](https://www.nrp.ai) and [Jetstream 2](https://jetstream-cloud.org)
   systems. These models are, however, running on public systems and shared between 
   multiple users nation-wide, and their performance can vary significantly based on
   demand.
@@ -94,7 +100,7 @@ This includes:
   including Haiku, Sonnet, and Opus (not Fable).
 
 You may also use other AI models (e.g. free models and personal subscriptions) if 
-you choose, but I encourage you to use the =provided models to understand (and 
+you choose, but I encourage you to use the provided models to understand (and 
 document!) their capabilities and shortcomings.
 
 To access these models, you will need to:
@@ -106,51 +112,26 @@ To access these models, you will need to:
 Specific details on how to do each of these steps are provided in the subsections below.
 
 ### Getting API information from AI Verde
-As a first step, log in to AI Verde (https://chat.cyverse.ai) using your UNM NetID. 
-when you first connect to AI Verde, it will ask you to select your identity provider;
+As a first step, log in to [AI Verde](https://chat.cyverse.ai) using your UNM NetID.
+When you first connect to AI Verde, it will ask you to select your identity provider;
 select "University of New Mexico" as your identity provider, and then authenticate
 with UNM to log in to AI Verde.
 
 After you log in, you will see two projects to which you have access: `UNM - CS587` and
 `UNM - CS587 - Claude`. For each of these projects, select the "Details" button, click on
-`API Key`, and then copy provided API key and URL to your local computer.
+`API Key`, and then copy the provided API key and URL to your local computer.
 
-Detailed documentation on usinug these endpoints is available from the API Documentation
-link on that webpage; the process for using these endpoints with Codex CLI and Claude Code
-are provided below.
-
-### Configuring Codex CLI to use these endpoints
-
-To configure Codex CLI to use these endpoints, you need to set the appropriate 
-configuration options in either your environment, `${HOME}/.codex/config.toml`,
-or both. I strongly recommend *not* storing API keys in general configuration
-files; I keep mine in a password manager and when I log in, run a shell command
-that downloads and sets them in environment variables which configuration files
-then access. If you don't want to go that far, here's a simple setup:
-
-In `${HOME}/.codex/config.toml`, add these lines to tell it to use the ai-verde
-endpoint with an API key taken from the shell's environment:
-```
-[model_providers.ai-verde]
-name = "ai-verde"
-base_url = "https://llm-api.cyverse.ai/v1"
-env_key = "AI_VERDE_API_KEY"
-wire_api = "responses"
-
-model_provider = "ai-verde"
-model = "nrp/qwen3-small"
-```
-
-You can then set the environment variable `AI_VERDE_API_KEY` to the API for the
-endpoint you want, and use the Codex CLI `/model' command to select the model
-to use.
+Detailed documentation on using these endpoints is available from the API Documentation
+link on that webpage; the process for using these endpoints with Claude Code
+is provided below.
 
 ### Configuring Claude Code to use these endpoints
-To configure Claude Code CLU to use these endpoints, you can create a 
-project-specific settings file that sets the endpoint and again takes the API 
-key from your environment. Specifically, I've already configured 
-`.claude/settings.json` to include the following lines so that the API key is again
-taken from the environment:
+To configure Claude Code CLI to use these endpoints, you can create a 
+project-specific settings file that sets the endpoint and takes the API 
+key from your environment. If you want, you can use a password manager and a sign-in
+script to manage your API keys, or (more easily) do it manually. Specifically, I've 
+already configured `.claude/settings.json` to include the following lines so that the 
+API key is again from the environment:
 ```
 {
   "env": {
@@ -162,13 +143,29 @@ taken from the environment:
 }
 ```
 
+Using this, you should be able to simply set the environment variable `AI_VERDE_API_KEY` 
+to the value you want and then have Claude Code work with it.
+
 ### Configuring other harnesses to use these endpoints
-Most every AI harness can talk to the provided AI endpoints; consult the documentation
-of your specific AI agent, from [AI Verde](https://aiverde-docs.cyverse.ai/api/), and
-from [LiteLLM Gateway](https://www.litellm.ai), which AI Verde is an instance of,
+Almost every AI harness can talk to the provided AI endpoints, with the exception of
+Codex; consult the documentation of your specific AI agent harness, the
+[AI Verde API documentation](https://aiverde-docs.cyverse.ai/api/), and the
+[LiteLLM Gateway documentation](https://www.litellm.ai), which AI Verde is an instance of,
 for more information on how to do so.
 
 ### Available Models
+
+#### Claude Models
+For the Claude endpoint, the following models are available, listed from least capable
+and expensive to most capable and expensive:
+  * unm-cs587/claude-haiku-4-5
+  * unm-cs587/claude-sonnet-4-6
+  * unm-cs587/claude-sonnet-5
+  * unm-cs587/claude-opus-4-8
+  * unm-cs587/claude-opus-5
+
+I recommend `unm-cs587/claude-sonnet-5` as a good default for this project if you're using 
+Anthropic models.
 
 #### Open Models
 For the open model API key, the following models are available:
@@ -176,11 +173,11 @@ For the open model API key, the following models are available:
   * nrp/minimax-m2
   * nrp/gpt-oss
   * nrp/gemma
-  * nrp/kimi - Fast and reasonable open coding model
+  * nrp/kimi
   * nrp/glm-5
-  * nrp/qwen3 - large but open slow coding model
-  * nrp/qwen3-small - smaller but still effective codeing model
-  * js2/gpt-oss-120b - large and fast general purpose model
+  * nrp/qwen3
+  * nrp/qwen3-small
+  * js2/gpt-oss-120b
   * phi-4-multimodal-instruct
 
 To get started, I suggest trying out `nrp/qwen3-small` for standard tasks and `nrp/qwen3`
@@ -193,21 +190,6 @@ its models.
 **XXX Note that Open Model access through AI Verde is currently hit-or-miss and I am troubleshooting
 it XXX**
 
-#### Claude Models
-For the Claude endpoint, the following models are available, listed from least capable
-and expensive to most capable and expensive:
-  * unm/claude-haiku-4-5
-  * unm/claude-sonnet-4-6
-  * unm/claude-sonnet-5
-  * unm/claude-opus-4-8
-  * unm/claude-opus-5
-
-I recommend `unm/claude-sonnet-5` as a good default for this project if you're using 
-Anthropic models.
-
-**XXX Note that Claude access through AI Verde is currently broken and I am troubleshooting
-it XXX**
-
 ## Limits on AI token usage.
 AI Models are not cheap to use, and if you seek to aggressively use AI models
 to complete this project, you will need to be thoughtful with AI usage because
@@ -215,8 +197,7 @@ of the performance and budget limits on these endpoints. Because you will likely
 be switching AI models between sessions, you should also make sure that your 
 repository documents the information needed for a new AI session to get started 
 quickly, for example by generating high-level design documents that can be 
-shared between sessions and make sure to write the MEMORY.md file at the 
-end of a session.
+shared between sessions.
 
 Not every request needs your most capable, most expensive model. Use a
 fast, cheap model for mechanical work (boilerplate test cases, formatting,
