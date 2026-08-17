@@ -3,7 +3,6 @@
 
 This file starts empty. At the end of each working session, ask your agent to
 fill in the sections below, and read them back at the start of the next one.
-See docs/AI_WORKFLOW.md for why this is worth the few minutes it costs.
 
 ## Current State
 
