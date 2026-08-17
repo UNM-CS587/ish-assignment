@@ -72,6 +72,8 @@ Potential sandboxing solutions include:
   1. sandvault (MacOS only) - a dedicated microVM solution for OS X that, along 
      with using a separate shared directory between a sandvault user and a 
      regular account is a lightweight sandboxing approach. What I use.
+  1. Builtin agent harness sandbox, for example Claude Code CLI's /sandbox 
+     command
   1. Other OS-level tools to run AI code separately from your host account, 
      such as a VSCode dev container, a virtual machine, or other OS-level 
      sandboxing (e.g.  `sandbox-exec` on MacOS, a restricted user account or 
@@ -80,17 +82,149 @@ Potential sandboxing solutions include:
 
 ## AI Model Availability
 
-The class provides an LLM gateway so you do not have to pay for model access
-out of pocket. TODO(instructor): access URL, signup steps, and per-student
-quota go here.
+The class provides an LLM Lite gateway though the University of Arizona-hosted 
+[AI Verde](chat.cyverse.ai) system for you to use to access a variety of AI models.
+This includes:
+  1. Unlimited access to state-of-the-art open models hosted on the NSF-funded
+  [National Research Platform](www.nrp.ai) and [Jetstream 2](jetstream-cloud.org)
+  systems. These models are, however, running on public systems and shared between 
+  multiple users nation-wide, and their performance can vary significantly based on
+  demand.
+  1. Budgeted-limited access ($20/student/month) to Anthropic frontier models, 
+  including Haiku, Sonnet, and Opus (not Fable).
+
+You may also use other AI models (e.g. free models and personal subscriptions) if 
+you choose, but I encourage you to use the =provided models to understand (and 
+document!) their capabilities and shortcomings.
+
+To access these models, you will need to:
+  1. Login to AI Verde using your UNM netid 
+  1. Copy your student-specific API endpoints, API keys, and available model names 
+     for the `UNM - CS587` `UNM - CS587 - Claude` connection points.
+  1. Set up your local agentic harness or model router to use these endpoints.
+
+Specific details on how to do each of these steps are provided in the subsections below.
+
+### Getting API information from AI Verde
+As a first step, log in to AI Verde (https://chat.cyverse.ai) using your UNM NetID. 
+when you first connect to AI Verde, it will ask you to select your identity provider;
+select "University of New Mexico" as your identity provider, and then authenticate
+with UNM to log in to AI Verde.
+
+After you log in, you will see two projects to which you have access: `UNM - CS587` and
+`UNM - CS587 - Claude`. For each of these projects, select the "Details" button, click on
+`API Key`, and then copy provided API key and URL to your local computer.
+
+Detailed documentation on usinug these endpoints is available from the API Documentation
+link on that webpage; the process for using these endpoints with Codex CLI and Claude Code
+are provided below.
+
+### Configuring Codex CLI to use these endpoints
+
+To configure Codex CLI to use these endpoints, you need to set the appropriate 
+configuration options in either your environment, `${HOME}/.codex/config.toml`,
+or both. I strongly recommend *not* storing API keys in general configuration
+files; I keep mine in a password manager and when I log in, run a shell command
+that downloads and sets them in environment variables which configuration files
+then access. If you don't want to go that far, here's a simple setup:
+
+In `${HOME}/.codex/config.toml`, add these lines to tell it to use the ai-verde
+endpoint with an API key taken from the shell's environment:
+```
+[model_providers.ai-verde]
+name = "ai-verde"
+base_url = "https://llm-api.cyverse.ai/v1"
+env_key = "AI_VERDE_API_KEY"
+wire_api = "responses"
+
+model_provider = "ai-verde"
+model = "nrp/qwen3-small"
+```
+
+You can then set the environment variable `AI_VERDE_API_KEY` to the API for the
+endpoint you want, and use the Codex CLI `/model' command to select the model
+to use.
+
+### Configuring Claude Code to use these endpoints
+To configure Claude Code CLU to use these endpoints, you can create a 
+project-specific settings file that sets the endpoint and again takes the API 
+key from your environment. Specifically, I've already configured 
+`.claude/settings.json` to include the following lines so that the API key is again
+taken from the environment:
+```
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://llm-api.cyverse.ai",
+    "ANTHROPIC_MODEL": "nrp/qwen3-small",
+    "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1"
+  },
+  "apiKeyHelper": "echo $AI_VERDE_API_KEY"
+}
+```
+
+### Configuring other harnesses to use these endpoints
+Most every AI harness can talk to the provided AI endpoints; consult the documentation
+of your specific AI agent, from [AI Verde](https://aiverde-docs.cyverse.ai/api/), and
+from [LiteLLM Gateway](https://www.litellm.ai), which AI Verde is an instance of,
+for more information on how to do so.
+
+### Available Models
+
+#### Open Models
+For the open model API key, the following models are available:
+  * nrp/glm-4.7
+  * nrp/minimax-m2
+  * nrp/gpt-oss
+  * nrp/gemma
+  * nrp/kimi - Fast and reasonable open coding model
+  * nrp/glm-5
+  * nrp/qwen3 - large but open slow coding model
+  * nrp/qwen3-small - smaller but still effective codeing model
+  * js2/gpt-oss-120b - large and fast general purpose model
+  * phi-4-multimodal-instruct
+
+To get started, I suggest trying out `nrp/qwen3-small` for standard tasks and `nrp/qwen3`
+for in-depth coding tasks that you're willing to wait for. Feel free to try other models, 
+however; the National Research Platform provides a [comparison of the features of the models
+available via NRP](https://nrp.ai/documentation/userdocs/ai/llm-managed/models/) as well
+as a [status page](https://nrp.ai/llm-status) with the availability and current demands on 
+its models.
+
+**XXX Note that Open Model access through AI Verde is currently hit-or-miss and I am troubleshooting
+it XXX**
+
+#### Claude Models
+For the Claude endpoint, the following models are available, listed from least capable
+and expensive to most capable and expensive:
+  * unm/claude-haiku-4-5
+  * unm/claude-sonnet-4-6
+  * unm/claude-sonnet-5
+  * unm/claude-opus-4-8
+  * unm/claude-opus-5
+
+I recommend `unm/claude-sonnet-5` as a good default for this project if you're using 
+Anthropic models.
+
+**XXX Note that Claude access through AI Verde is currently broken and I am troubleshooting
+it XXX**
+
+## Limits on AI token usage.
+AI Models are not cheap to use, and if you seek to aggressively use AI models
+to complete this project, you will need to be thoughtful with AI usage because
+of the performance and budget limits on these endpoints. Because you will likely 
+be switching AI models between sessions, you should also make sure that your 
+repository documents the information needed for a new AI session to get started 
+quickly, for example by generating high-level design documents that can be 
+shared between sessions and make sure to write the MEMORY.md file at the 
+end of a session.
 
 Not every request needs your most capable, most expensive model. Use a
 fast, cheap model for mechanical work (boilerplate test cases, formatting,
-straightforward bug fixes) and reserve your most capable model for work
-that needs real reasoning, such as designing the job-control and pipeline
+straightforward bug fixes, text editing) and reserve your most capable model 
+for work that needs deep reasoning, such as designing the job-control and pipeline
 extensions to the parser or tracking down a race condition in process
-management. Watch your token use as you go: a session that dumps large
-files or long command output into the model's context repeatedly burns
+management. Watch your token use on AI Verde as you go: a session that dumps 
+large files or long command output into the model's context repeatedly burns
 through tokens without adding understanding, so ask the agent to summarize
 or point it at specific line ranges instead of whole files where you can.
 
@@ -106,8 +240,8 @@ a time:
      the test cases it intends to add before it writes implementation
      code, and review that plan yourself.
   4. Implement in small steps. Ask for one piece of functionality at a
-     time (e.g. parse the `>` and `>>` operators before wiring redirection
-     into the executor), and run the test suite after each step.
+     time (e.g. parse the `>` and `>>` operators before implementing
+     redirection), and run the test suite after each step.
   5. Review the diff. Read every change the agent makes; do not accept a
      change you can't explain in the in-class test or to the instructor.
   6. Commit with a real message. Record what the feature is and, per this
