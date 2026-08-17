@@ -142,7 +142,8 @@ ctest --test-dir build -R RedirectionTests --output-on-failure
 
 Read the per-test lines rather than the summary. A category `ctest` cannot run
 in your environment reports as skipped and still leaves the summary reading
-`100% tests passed`; the README lists the conditions that cause this.
+`100% tests passed`; [docs/CLARIFICATIONS.md](CLARIFICATIONS.md) lists the
+conditions that cause this.
 
 ### Building the report
 
