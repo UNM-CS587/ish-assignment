@@ -7,13 +7,13 @@
 # For each student the script:
 #   1. creates a private repository from the assignment template,
 #   2. enables GitHub Actions so the test workflows run,
-#   3. gives the student write access to it,
-#   4. gives the staff team write access to it,
+#   3. adds the student as an outside collaborator with write access to it,
+#   4. gives the staff team write access to it, and
 #   5. protects `main` with a ruleset that requires a pull request and a
-#      passing student-test run,
-#   6. invites the student to the organization so organization-billed
-#      Codespaces are available to them, and
-#   7. adds the student to the students team.
+#      passing student-test run.
+#
+# Students never join the organization; they reach their repository only as
+# an outside collaborator.
 #
 # Re-running the script over a student who already has a repository reapplies
 # every setting and leaves the contents alone, so it is safe to run again
@@ -29,7 +29,6 @@ ORG=UNM-CS587
 TEMPLATE=UNM-CS587/ish-assignment
 PREFIX=ish
 STAFF_TEAM=staff
-STUDENT_TEAM=students
 STATUS_CHECK=run-student-tests
 # The app whose check runs count as $STATUS_CHECK; pinning it keeps another
 # app from reporting a passing check under the same name.
@@ -55,10 +54,6 @@ Options:
   --staff-team <s>  Slug of the organization team that gets write access and
                     ruleset bypass. Pass an empty string to skip.
                     Default: $STAFF_TEAM
-  --student-team <s>
-                    Slug of the organization team each student joins. Grant
-                    it no repository access. Pass an empty string to skip.
-                    Default: $STUDENT_TEAM
   --dry-run         Report what would change without changing anything.
   -h, --help        Print this message.
 EOF
@@ -104,10 +99,6 @@ while [[ $# -gt 0 ]]; do
 		;;
 	--staff-team)
 		STAFF_TEAM=${2-}
-		shift 2
-		;;
-	--student-team)
-		STUDENT_TEAM=${2-}
 		shift 2
 		;;
 	--dry-run)
@@ -159,9 +150,6 @@ if [[ -n $STAFF_TEAM ]]; then
 		die "no team \`$STAFF_TEAM\` in $ORG; create it or pass --staff-team ''"
 	bypass="$bypass,{\"actor_id\":$staff_team_id,\"actor_type\":\"Team\",\"bypass_mode\":\"always\"}"
 fi
-
-[[ -z $STUDENT_TEAM ]] || gh api "/orgs/$ORG/teams/$STUDENT_TEAM" --silent 2>/dev/null ||
-	die "no team \`$STUDENT_TEAM\` in $ORG; create it or pass --student-team ''"
 
 ruleset_json=$(
 	cat <<EOF
@@ -244,15 +232,6 @@ provision() {
 		run gh api --silent --method POST "/repos/$repo/rulesets" --input - <<<"$ruleset_json" ||
 			warn "$repo: could not protect the default branch (rulesets on private repositories need a GitHub Team plan)"
 	fi
-
-	gh api "/orgs/$ORG/members/$student" &>/dev/null ||
-		run gh api --silent --method PUT "/orgs/$ORG/memberships/$student" -f role=member ||
-		warn "$student: could not invite to $ORG; Codespaces will not be billed to the organization"
-
-	[[ -n $STUDENT_TEAM ]] &&
-		{ run gh api --silent --method PUT "/orgs/$ORG/teams/$STUDENT_TEAM/memberships/$student" \
-			-f role=member ||
-			warn "$student: could not add to the $STUDENT_TEAM team"; }
 
 	log "  https://github.com/$repo"
 	return 0

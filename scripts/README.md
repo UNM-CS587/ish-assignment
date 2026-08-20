@@ -12,13 +12,17 @@ repository in the class organization named `ish-<github-id>`, generated from
 the `ish-assignment` template, with:
 
   * GitHub Actions enabled, so the class and student test workflows run,
-  * write access for the student and for the staff team,
+  * write access for the student as an outside collaborator, and for the
+    staff team, and
   * a `Student Test Check` ruleset on `main` matching the one on this
     repository: no direct pushes, no deletion, no force pushes, and a passing
-    `run-student-tests` check before a pull request can merge,
-  * an organization invitation for the student, which is what makes
-    organization-billed Codespaces available to them, and
-  * membership in the students team.
+    `run-student-tests` check before a pull request can merge.
+
+The student never joins the organization; they reach the repository only as
+an outside collaborator, so they cannot see any other student's repository.
+Codespaces the student creates on it still bill to the organization, because
+of the Codespaces access setting below, not because of organization
+membership.
 
 Instructors bypass the ruleset, so you can push a fix to a student repository
 directly when you need to.
@@ -37,13 +41,12 @@ script reapplies every setting and never touches repository contents, so run
 it again as late adds come in. It reports each repository it could not
 finish and exits nonzero, rather than stopping at the first failure.
 
-`gh auth status` must show the `repo` and `admin:org` scopes; the
-organization invitation, the team grants, and the team memberships need
-`admin:org`. Run `--dry-run` first and read what it intends to do.
+`gh auth status` must show the `repo` and `admin:org` scopes; the staff team
+grant needs `admin:org`. Run `--dry-run` first and read what it intends to do.
 
 ## lock-student-repos.sh
 
-At the code deadline, 11:59pm on Friday, September 11, 2026, this script
+At the code deadline, 11:59pm on Wednesday, September 16, 2026, this script
 drops every student from write access to read access. It prints the `main`
 commit it found on each repository as it goes, which is the record of what
 you graded, so keep the output:
@@ -70,16 +73,13 @@ one student write access back for an extension or a regrade:
 The scripts assume the class organization is already set up this way:
 
   1. **Base permissions: None** (Settings > Member privileges). Students are
-     organization members, so any wider base permission would give every
-     student read access to every other student's repository.
+     outside collaborators, not organization members, but a wider base
+     permission would still give every organization member, including every
+     other student who is ever added by hand, read access to every
+     repository.
   1. **A `staff` team** holding the instructor and any graders. The script
      grants it write access to each student repository and lets it bypass the
      ruleset. Pass `--staff-team ''` if you would rather not use one.
-  1. **A `students` team** with no repository access of its own, for reaching
-     the class through Codespaces policy, organization settings, and
-     announcements. Grant this team access to nothing: any repository
-     permission on it hands every student access to every other student's
-     work. Pass `--student-team ''` to skip it.
   1. **`ish-assignment` marked as a template repository** (Settings >
      Template repository). The script generates each student repository from
      it, which gives the student a clean single-commit history to build their
@@ -87,9 +87,12 @@ The scripts assume the class organization is already set up this way:
   1. **A GitHub Team plan or an Education upgrade.** Rulesets on private
      repositories need one. Without it, repository creation and access still
      work, and the script warns that `main` is unprotected.
-  1. **Codespaces enabled** (Settings > Codespaces) for organization members,
-     with a spending limit set. `docs/DEVELOPMENT.md` tells students how to
-     use them.
+  1. **Codespaces access set to all members and outside collaborators**
+     (Settings > Codespaces > General > "Codespaces access"), with a spending
+     limit set (Settings > Billing). Without this, a student's Codespace
+     bills to their own account instead of the organization's, because they
+     are an outside collaborator rather than an organization member.
+     `docs/DEVELOPMENT.md` tells students how to use Codespaces.
 
 ## Grading
 

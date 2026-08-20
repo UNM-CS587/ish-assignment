@@ -62,10 +62,11 @@ WSL2. If using homebrew, you'll want the following packages:
 
 A Codespace is a Linux container that GitHub runs for you, reachable from a
 browser or from a local VS Code or JetBrains IDE attached to it. Your
-assignment repository lives in the class organization, so Codespaces are
-available on it and billed to the class rather than to you. This is the
-quickest way to get a working environment, and it is a useful fallback when
-something breaks in your local one the night before the deadline.
+assignment repository lives in the class organization, and the organization
+has enabled Codespaces access for outside collaborators, so Codespaces on it
+are billed to the class rather than to you. This is the quickest way to get a
+working environment, and it is a useful fallback when something breaks in
+your local one the night before the deadline.
 
 The repository ships a `.devcontainer/devcontainer.json` that starts from
 Microsoft's C++ image and installs Boost, shelltestrunner, Google Test, and
@@ -86,8 +87,8 @@ Three things to watch:
     committed and pushed.
   * **Codespaces cost core-hours, even idle ones.** A Codespace stops on its
     own after 30 minutes of inactivity but keeps consuming storage until you
-    delete it. Stop or delete Codespaces you are done with, and watch your
-    usage under your GitHub account's Settings > Billing.
+    delete it, against the class's shared spending limit. Stop or delete
+    Codespaces you are done with.
   * **Keep credentials out of the repository.** If you run an AI coding
     harness inside the Codespace, put its API key in a Codespaces secret
     (your account Settings > Codespaces > Secrets), which arrives as an
